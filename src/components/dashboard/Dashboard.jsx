@@ -32,25 +32,6 @@ export default function Dashboard({ onNavigate, data }) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-5">
-      {/* Welcome + Level */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
-            {currentLevel?.emoji} {currentLevel?.title}
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
-            {totalQ === 0 ? 'Start your first quiz!' : `${totalQ} questions answered`}
-          </p>
-        </div>
-        {data?.streaks?.current > 0 && (
-          <div className="flex flex-col items-center bg-orange-50 dark:bg-orange-900/20 rounded-2xl px-4 py-2 border border-orange-200 dark:border-orange-800">
-            <span className="text-2xl">🔥</span>
-            <span className="text-xl font-black text-orange-500">{data.streaks.current}</span>
-            <span className="text-xs text-orange-400">streak</span>
-          </div>
-        )}
-      </div>
-
       {/* XP Bar */}
       <XPBar xpProgress={xpProgress} />
 
@@ -72,7 +53,7 @@ export default function Dashboard({ onNavigate, data }) {
           <div className={`text-sm ${isCompletedToday ? 'text-green-600 dark:text-green-400' : 'text-blue-200'}`}>
             {isCompletedToday
               ? `Day streak: ${dailyStreak} 🔥 — Come back tomorrow!`
-              : '5 questions · +50 bonus XP · Build your streak!'}
+              : '10 questions · +50 bonus XP · Build your streak!'}
           </div>
         </div>
         {!isCompletedToday && <span className="text-white text-xl">→</span>}
@@ -149,6 +130,14 @@ export default function Dashboard({ onNavigate, data }) {
           <BadgeGrid unlockedBadges={badges.slice(-6)} compact />
         </div>
       )}
+
+      <footer className="text-center text-xs text-slate-400 dark:text-slate-600 py-2">
+        Vibe coded with ❤️ by{' '}
+        <a href="https://stadicus.com" target="_blank" rel="noopener noreferrer"
+          className="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">
+          Stadicus
+        </a>
+      </footer>
     </div>
   )
 }

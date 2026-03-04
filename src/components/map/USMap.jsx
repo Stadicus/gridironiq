@@ -8,6 +8,43 @@ const GEO_URL = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'
 // Northeast states that need zoom (small on standard map)
 const NE_ABBRS = new Set(['CT','DE','MA','MD','ME','NH','NJ','NY','PA','RI','VT'])
 
+// Approximate px-per-degree for AlbersUSA at scale=900 in an 800px-wide SVG.
+// Used only for relative overlap detection — both conversions use the same scale
+// so the direction and magnitude of displacement are consistent.
+const LNG_PX = 11, LAT_PX = 10
+
+// Force-directed spread: push overlapping markers apart until no pair is closer
+// than minDist, then convert displacement back to lng/lat. Computed once at
+// module load so it costs nothing at render time.
+function spreadMarkers(teams, coords, minDist) {
+  const pts = teams
+    .filter(t => coords[t.id])
+    .map(t => ({ id: t.id, x: coords[t.id][0] * LNG_PX, y: -coords[t.id][1] * LAT_PX }))
+
+  for (let iter = 0; iter < 300; iter++) {
+    let moved = false
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const a = pts[i], b = pts[j]
+        const dx = b.x - a.x, dy = b.y - a.y
+        const d = Math.hypot(dx, dy)
+        if (d < minDist && d > 0.001) {
+          const f = (minDist - d) * 0.5 / d
+          a.x -= dx * f;  a.y -= dy * f
+          b.x += dx * f;  b.y += dy * f
+          moved = true
+        }
+      }
+    }
+    if (!moved) break
+  }
+
+  return Object.fromEntries(pts.map(p => [p.id, [p.x / LNG_PX, -p.y / LAT_PX]]))
+}
+
+const DISPLAY_COORDS_DESKTOP = spreadMarkers(NFL_TEAMS, NFL_COORDS, 20)
+const DISPLAY_COORDS_MOBILE  = spreadMarkers(NFL_TEAMS, NFL_COORDS, 30)
+
 export default function USMap({
   position,
   onPositionChange,
@@ -44,6 +81,13 @@ export default function USMap({
     if (abbr === hoveredState) return 1.5
     return 0.5
   }
+
+  const isMobile = window.innerWidth < 640
+  const base = isMobile ? 28 : 18
+  const displayCoords = isMobile ? DISPLAY_COORDS_MOBILE : DISPLAY_COORDS_DESKTOP
+  // On desktop, logos stay a fixed screen size regardless of zoom level.
+  // On mobile they scale with zoom to avoid crowding when zoomed out.
+  const logoSize = isMobile ? base / position.zoom : base
 
   return (
     <ComposableMap
@@ -101,15 +145,14 @@ export default function USMap({
         </Geographies>
 
         {showNFLLogos && NFL_TEAMS.map(team => {
-          const coords = NFL_COORDS[team.id]
+          const coords = displayCoords[team.id]
           if (!coords) return null
-          const s = 18 / position.zoom
           return (
             <Marker key={team.id} coordinates={coords}>
               <image
                 href={`https://a.espncdn.com/i/teamlogos/nfl/500/${team.id.toLowerCase()}.png`}
-                x={-s / 2} y={-s / 2}
-                width={s} height={s}
+                x={-logoSize / 2} y={-logoSize / 2}
+                width={logoSize} height={logoSize}
                 style={{ cursor: 'pointer' }}
                 onMouseEnter={() => onTeamHover?.(team)}
                 onMouseLeave={() => onTeamLeave?.()}

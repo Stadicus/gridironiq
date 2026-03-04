@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import USMap from './USMap'
-import StateTooltip from './StateTooltip'
 import { useMap } from '../../hooks/useMap'
 import { STATE_BY_ABBR } from '../../data/states'
 import { TEAMS_BY_STATE } from '../../data/nfl'
@@ -78,10 +77,26 @@ export default function MapPage({ onNavigate, data }) {
           </button>
         </div>
 
-        {/* State hover tooltip */}
-        {hoveredState && !selectedState && (
-          <StateTooltip abbr={hoveredState} stateProgress={stateProgress} />
-        )}
+        {/* State name label — follows cursor, only when NFL logos are hidden */}
+        {!showNFLLogos && hoveredState && !selectedState && (() => {
+          const containerW = mapContainerRef.current?.clientWidth || 800
+          const state = STATE_BY_ABBR[hoveredState]
+          if (!state) return null
+          const flipX = mousePos.x + 14 + 160 > containerW
+          return (
+            <div
+              className="absolute bg-slate-900/80 dark:bg-slate-700/90 text-white text-xs font-semibold px-2.5 py-1 rounded-lg pointer-events-none z-20 whitespace-nowrap shadow-lg"
+              style={{
+                top: mousePos.y + 14,
+                ...(flipX
+                  ? { right: containerW - mousePos.x + 14 }
+                  : { left: mousePos.x + 14 }),
+              }}
+            >
+              {state.name}
+            </div>
+          )
+        })()}
 
         {/* NFL team hover tooltip — follows mouse */}
         {hoveredTeam && (() => {

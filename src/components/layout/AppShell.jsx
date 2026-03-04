@@ -17,23 +17,21 @@ export default function AppShell({ children, currentPage, onNavigate, xpProgress
 
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-blue-800 text-white safe-top">
-        <span className="font-bold text-lg">🏈 Gridiron IQ</span>
+        <button onClick={() => onNavigate('dashboard')} className="font-bold text-lg hover:opacity-80 transition-opacity">🏈 Gridiron IQ</button>
         <div className="flex items-center gap-3 text-sm">
           {streak > 0 && <span className="flex items-center gap-1">🔥 {streak}</span>}
           <span className="flex items-center gap-1">⭐ Lv.{currentLevel?.level}</span>
+          <button
+            onClick={() => onNavigate('settings')}
+            className="text-lg leading-none opacity-80 hover:opacity-100"
+            aria-label="Settings"
+          >⚙️</button>
         </div>
       </div>
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
         {children}
-        <footer className="text-center text-xs text-slate-400 dark:text-slate-600 py-4 mt-2">
-          Vibe coded with ❤️ by{' '}
-          <a href="https://stadicus.com" target="_blank" rel="noopener noreferrer"
-            className="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">
-            Stadicus
-          </a>
-        </footer>
       </main>
 
       {/* Mobile bottom nav */}

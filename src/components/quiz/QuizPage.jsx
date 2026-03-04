@@ -12,19 +12,29 @@ const TABS = [
   { id: 'nfl',       label: 'NFL',       emoji: '🏈', modes: NFL_MODES },
 ]
 
-function ModeGrid({ modes, selectedMode, onSelect }) {
+function ModeGrid({ modes, onSelect }) {
+  const [activeMode, setActiveMode] = useState(null)
+
+  function handleClick(id) {
+    setActiveMode(id)
+    onSelect(id)
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {modes.map((qm, i) => (
         <motion.button
           key={qm.id}
           initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.04 }}
-          onClick={() => onSelect(qm.id)}
-          className={`card text-left flex items-start gap-3 transition-all active:scale-95 ${
-            selectedMode === qm.id
-              ? 'border-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+          animate={activeMode === qm.id
+            ? { opacity: 1, y: 0, boxShadow: ['0 0 0 0px #3b82f6', '0 0 0 6px #3b82f640', '0 0 0 3px #3b82f620', '0 0 0 6px #3b82f640'] }
+            : { opacity: 1, y: 0 }
+          }
+          transition={{ delay: activeMode ? 0 : i * 0.04, duration: 0.35, repeat: activeMode === qm.id ? Infinity : 0 }}
+          onClick={() => handleClick(qm.id)}
+          className={`card text-left flex items-start gap-3 transition-colors active:scale-95 ${
+            activeMode === qm.id
+              ? 'border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/20'
               : 'hover:border-blue-300'
           }`}
         >
@@ -46,6 +56,12 @@ export default function QuizPage({ onNavigate, initialState, data }) {
   const [activeTab, setActiveTab] = useState(() =>
     QUIZ_MODES[initialState?.mode]?.category === 'nfl' ? 'nfl' : 'geography'
   )
+
+  function handleModeSelect(id) {
+    setMode(id)
+    // Short delay so the blink animation is visible before the quiz renders
+    setTimeout(() => setStarted(true), 380)
+  }
 
   if (started && mode) {
     return (
@@ -91,8 +107,7 @@ export default function QuizPage({ onNavigate, initialState, data }) {
         >
           <ModeGrid
             modes={currentTab.modes}
-            selectedMode={mode}
-            onSelect={setMode}
+            onSelect={handleModeSelect}
           />
         </motion.div>
       </AnimatePresence>
@@ -119,14 +134,9 @@ export default function QuizPage({ onNavigate, initialState, data }) {
         </div>
       </div>
 
-      {/* ── Start ────────────────────────────────────────────────────────── */}
-      <button
-        onClick={() => mode && setStarted(true)}
-        disabled={!mode}
-        className="btn-primary py-4 text-lg disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        {mode ? `Start ${QUIZ_MODES[mode]?.label} →` : 'Select a quiz mode above'}
-      </button>
+      <p className="text-center text-sm text-slate-400 dark:text-slate-500 -mt-2">
+        Tap a quiz mode above to start instantly
+      </p>
     </div>
   )
 }

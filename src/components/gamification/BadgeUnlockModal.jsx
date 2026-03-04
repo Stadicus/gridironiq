@@ -1,8 +1,11 @@
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BADGES } from '../../data/gamificationData'
+import { playBadge } from '../../utils/sound'
 
 export default function BadgeUnlockModal({ badgeId, onClose }) {
   const badge = BADGES.find(b => b.id === badgeId)
+  useEffect(() => { if (badge) playBadge() }, [badge])
   if (!badge) return null
 
   return (

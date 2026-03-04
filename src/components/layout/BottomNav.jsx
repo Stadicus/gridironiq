@@ -3,12 +3,12 @@ const NAV_ITEMS = [
   { id: 'map',       label: 'Map',     emoji: '🗺️' },
   { id: 'quiz',      label: 'Quiz',    emoji: '🎯' },
   { id: 'daily',     label: 'Daily',   emoji: '📅' },
-  { id: 'progress',  label: 'Stats',   emoji: '📊' }
+  { id: 'progress',  label: 'Progress', emoji: '📊' }
 ]
 
 export default function BottomNav({ currentPage, onNavigate }) {
   return (
-    <div className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 safe-bottom">
+    <div className="bg-blue-800 dark:bg-slate-800 safe-bottom">
       <div className="flex">
         {NAV_ITEMS.map(item => (
           <button
@@ -16,8 +16,8 @@ export default function BottomNav({ currentPage, onNavigate }) {
             onClick={() => onNavigate(item.id)}
             className={`flex-1 flex flex-col items-center py-2 text-xs transition-colors ${
               currentPage === item.id
-                ? 'text-blue-700 dark:text-blue-400'
-                : 'text-slate-500 dark:text-slate-400'
+                ? 'text-white'
+                : 'text-blue-200 dark:text-slate-400'
             }`}
           >
             <span className="text-xl leading-none mb-0.5">{item.emoji}</span>

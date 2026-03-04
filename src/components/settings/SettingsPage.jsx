@@ -6,7 +6,7 @@ export default function SettingsPage({ onNavigate, data }) {
   const settings = data?.settings || {}
   const [diff, setDiff] = useState(settings.difficulty || 'medium')
   const [sound, setSound] = useState(settings.soundEnabled !== false)
-  const [theme, setTheme] = useState(settings.theme || 'light')
+  const [theme, setTheme] = useState(settings.theme || 'system')
   const [saved, setSaved] = useState(false)
   const [importError, setImportError] = useState(null)
   const [confirmReset, setConfirmReset] = useState(false)
@@ -78,12 +78,12 @@ export default function SettingsPage({ onNavigate, data }) {
       {/* Theme */}
       <div className="card">
         <h2 className="font-semibold text-slate-700 dark:text-slate-300 mb-3">Theme</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {[['light','☀️ Light'],['dark','🌙 Dark']].map(([key, label]) => (
+        <div className="grid grid-cols-3 gap-2">
+          {[['system','🖥️ System'],['light','☀️ Light'],['dark','🌙 Dark']].map(([key, label]) => (
             <button
               key={key}
               onClick={() => setTheme(key)}
-              className={`p-3 rounded-xl border-2 font-medium transition-all ${
+              className={`p-3 rounded-xl border-2 font-medium transition-all text-sm ${
                 theme === key
                   ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                   : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'

@@ -4,7 +4,8 @@ import { useQuiz } from '../../hooks/useQuiz'
 import { useProgress } from '../../hooks/useProgress'
 import { useMap } from '../../hooks/useMap'
 import { DIFFICULTY } from '../../utils/difficultyConfig'
-import { fetchWikiImage } from '../../utils/imageCache'
+import { fetchWikiData, cacheImageUrl } from '../../utils/imageCache'
+import { playCorrect, playWrong } from '../../utils/sound'
 import QuizTimer from './QuizTimer'
 import AnswerChoices from './AnswerChoices'
 import TypeAnswer from './TypeAnswer'
@@ -20,6 +21,7 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
   const [timerKey, setTimerKey] = useState(0)
   const [timerActive, setTimerActive] = useState(false)
   const [questionImage, setQuestionImage] = useState(null)
+  const [questionBio, setQuestionBio] = useState(null)
   const [imageLoading, setImageLoading] = useState(false)
 
   // Start quiz on mount if initialMode provided
@@ -49,16 +51,25 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
     }
   }, [quiz.phase, onComplete])
 
-  // Fetch image for the current question
+  // Fetch and locally cache image (and bio for famousPeople) for the current question
   useEffect(() => {
     const q = quiz.currentQuestion
     setQuestionImage(null)
+    setQuestionBio(null)
     if (!q) return
-    if (q.logoUrl) { setQuestionImage(q.logoUrl); return }
+    if (q.logoUrl) {
+      setImageLoading(true)
+      cacheImageUrl(q.logoUrl).then(url => {
+        setQuestionImage(url)
+        setImageLoading(false)
+      })
+      return
+    }
     if (q.wikiTitle) {
       setImageLoading(true)
-      fetchWikiImage(q.wikiTitle).then(url => {
-        setQuestionImage(url)
+      fetchWikiData(q.wikiTitle).then(({ imageUrl, bio }) => {
+        setQuestionImage(imageUrl)
+        if (q.type === 'famousPeople') setQuestionBio(bio)
         setImageLoading(false)
       })
     }
@@ -66,8 +77,9 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
 
   const handleAnswer = useCallback((answer) => {
     setSelectedAnswer(answer)
-    quiz.submitAnswer(answer, progressSubmit)
+    const isCorrect = quiz.submitAnswer(answer, progressSubmit)
     setTimerActive(false)
+    if (isCorrect) playCorrect(); else playWrong()
   }, [quiz, progressSubmit])
 
   const handleTimerExpire = useCallback(() => {
@@ -139,43 +151,58 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
           >
             {/* Question card */}
             <div className="card overflow-hidden">
-              <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-2">
-                {(q.type || '').replace(/([A-Z])/g, ' $1').trim()}
-              </div>
-
-              {/* Question image */}
-              {q.logoUrl ? (
-                <div className="flex justify-center mb-3">
-                  <img
-                    src={q.logoUrl}
-                    alt=""
-                    className="h-24 w-24 object-contain"
-                    onError={e => { e.target.style.display = 'none' }}
-                  />
+              {(q.wikiTitle || q.logoUrl) ? (
+                /* Portrait layout for all image questions — image left, content right.
+                   Image column uses absolute positioning to fill the column edge-to-edge
+                   regardless of how tall the content column grows. */
+                <div className="flex -mx-4 -mt-4 -mb-4">
+                  <div
+                    className={`w-1/3 aspect-square flex-shrink-0 self-start relative overflow-hidden ${q.logoUrl ? 'bg-white dark:bg-slate-900' : 'bg-slate-100 dark:bg-slate-700'}`}
+                  >
+                    {imageLoading ? (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    ) : questionImage ? (
+                      <img
+                        src={questionImage}
+                        alt=""
+                        className={`absolute inset-0 w-full h-full ${q.logoUrl ? 'object-contain p-4' : 'object-cover object-top'}`}
+                        onError={() => setQuestionImage(null)}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-4xl">🖼️</div>
+                    )}
+                  </div>
+                  <div className="flex-1 px-4 py-3 flex flex-col gap-2 min-w-0">
+                    <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                      {(q.type || '').replace(/([A-Z])/g, ' $1').trim()}
+                    </div>
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white leading-snug">{q.question}</h2>
+                    {answered && q.explanation && (
+                      <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">{q.explanation}</p>
+                    )}
+                    {answered && questionBio && (
+                      <p className="text-xs text-slate-400 dark:text-slate-500 italic leading-relaxed">{questionBio}</p>
+                    )}
+                  </div>
                 </div>
-              ) : imageLoading ? (
-                <div className="h-40 mb-3 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                  <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                </div>
-              ) : questionImage ? (
-                <div className="h-40 mb-3 -mx-4 -mt-1">
-                  <img
-                    src={questionImage}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={() => setQuestionImage(null)}
-                  />
-                </div>
-              ) : null}
-
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
-                {q.question}
-              </h2>
-
-              {answered && q.explanation && (
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
-                  {q.explanation}
-                </p>
+              ) : (
+                /* No image: flat layout */
+                <>
+                  <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide mb-2">
+                    {(q.type || '').replace(/([A-Z])/g, ' $1').trim()}
+                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                    {q.question}
+                  </h2>
+                  {/* Skip explanation for stateId — map already shows the answer visually */}
+                  {answered && q.explanation && q.type !== 'stateId' && (
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
+                      {q.explanation}
+                    </p>
+                  )}
+                </>
               )}
             </div>
 

@@ -86,3 +86,48 @@ export const TEAMS_BY_STATE = NFL_TEAMS.reduce((acc, team) => {
   acc[team.state].push(team)
   return acc
 }, {})
+
+// Well-known players for the MVP quiz — current stars and all-time legends.
+// teamId = the team they are most associated with.
+export const NFL_LEGENDS = [
+  // ── Current stars ──────────────────────────────────────────────────────────
+  { name: 'Patrick Mahomes',     teamId: 'KC',  wikiTitle: 'Patrick Mahomes'                       },
+  { name: 'Josh Allen',          teamId: 'BUF', wikiTitle: 'Josh Allen (quarterback)'               },
+  { name: 'Lamar Jackson',       teamId: 'BAL', wikiTitle: 'Lamar Jackson'                          },
+  { name: 'Joe Burrow',          teamId: 'CIN', wikiTitle: 'Joe Burrow'                             },
+  { name: 'Jalen Hurts',         teamId: 'PHI', wikiTitle: 'Jalen Hurts'                            },
+  { name: 'C.J. Stroud',         teamId: 'HOU', wikiTitle: 'C. J. Stroud'                           },
+  { name: 'Justin Jefferson',    teamId: 'MIN', wikiTitle: 'Justin Jefferson (wide receiver)'       },
+  { name: 'Travis Kelce',        teamId: 'KC',  wikiTitle: 'Travis Kelce'                           },
+  { name: 'Tyreek Hill',         teamId: 'MIA', wikiTitle: 'Tyreek Hill'                            },
+  { name: 'Christian McCaffrey', teamId: 'SF',  wikiTitle: 'Christian McCaffrey'                    },
+  { name: 'Saquon Barkley',      teamId: 'PHI', wikiTitle: 'Saquon Barkley'                         },
+  { name: "Ja'Marr Chase",       teamId: 'CIN', wikiTitle: "Ja'Marr Chase"                          },
+  { name: 'Justin Herbert',      teamId: 'LAC', wikiTitle: 'Justin Herbert'                         },
+  { name: 'Brock Purdy',         teamId: 'SF',  wikiTitle: 'Brock Purdy'                            },
+  { name: 'T.J. Watt',           teamId: 'PIT', wikiTitle: 'T. J. Watt'                             },
+  { name: 'Micah Parsons',       teamId: 'DAL', wikiTitle: 'Micah Parsons'                          },
+  { name: 'Myles Garrett',       teamId: 'CLE', wikiTitle: 'Myles Garrett (defensive end)'          },
+  { name: 'Derrick Henry',       teamId: 'BAL', wikiTitle: 'Derrick Henry'                          },
+  // ── All-time legends ───────────────────────────────────────────────────────
+  { name: 'Tom Brady',           teamId: 'NE',  wikiTitle: 'Tom Brady'                              },
+  { name: 'Jerry Rice',          teamId: 'SF',  wikiTitle: 'Jerry Rice'                             },
+  { name: 'Walter Payton',       teamId: 'CHI', wikiTitle: 'Walter Payton'                          },
+  { name: 'Barry Sanders',       teamId: 'DET', wikiTitle: 'Barry Sanders'                          },
+  { name: 'Emmitt Smith',        teamId: 'DAL', wikiTitle: 'Emmitt Smith'                           },
+  { name: 'Joe Montana',         teamId: 'SF',  wikiTitle: 'Joe Montana'                            },
+  { name: 'Peyton Manning',      teamId: 'IND', wikiTitle: 'Peyton Manning'                         },
+  { name: 'Brett Favre',         teamId: 'GB',  wikiTitle: 'Brett Favre'                            },
+  { name: 'John Elway',          teamId: 'DEN', wikiTitle: 'John Elway'                             },
+  { name: 'Dan Marino',          teamId: 'MIA', wikiTitle: 'Dan Marino'                             },
+  { name: 'Lawrence Taylor',     teamId: 'NYG', wikiTitle: 'Lawrence Taylor'                        },
+  { name: 'Ray Lewis',           teamId: 'BAL', wikiTitle: 'Ray Lewis'                              },
+  { name: 'Randy Moss',          teamId: 'MIN', wikiTitle: 'Randy Moss'                             },
+  { name: 'Reggie White',        teamId: 'GB',  wikiTitle: 'Reggie White'                           },
+  { name: 'Adrian Peterson',     teamId: 'MIN', wikiTitle: 'Adrian Peterson (running back)'         },
+  { name: 'Calvin Johnson',      teamId: 'DET', wikiTitle: 'Calvin Johnson (wide receiver)'         },
+  { name: 'Larry Fitzgerald',    teamId: 'ARI', wikiTitle: 'Larry Fitzgerald'                       },
+  { name: 'Rob Gronkowski',      teamId: 'NE',  wikiTitle: 'Rob Gronkowski'                         },
+  { name: 'Aaron Rodgers',       teamId: 'GB',  wikiTitle: 'Aaron Rodgers'                          },
+  { name: 'Deion Sanders',       teamId: 'ATL', wikiTitle: 'Deion Sanders'                          },
+]

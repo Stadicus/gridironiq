@@ -50,6 +50,7 @@ export function useQuiz() {
     setResults(prev => [...prev, { question: currentQuestion, answer, isCorrect, secondsTaken, xpGained }])
     setPhase(PHASE.ANSWERED)
     startTimeRef.current = Date.now()
+    return isCorrect
   }, [phase, currentQuestion, difficulty])
 
   const nextQuestion = useCallback(() => {
@@ -71,7 +72,6 @@ export function useQuiz() {
   }, [])
 
   const totalXP = results.reduce((sum, r) => sum + (r.xpGained || 0), 0)
-  const correctCount = results.filter(r => r.isCorrect).length
 
   return {
     phase,
@@ -85,7 +85,6 @@ export function useQuiz() {
     lastAnswerCorrect,
     lastXP,
     totalXP,
-    correctCount,
     startQuiz,
     submitAnswer,
     nextQuestion,

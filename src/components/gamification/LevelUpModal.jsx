@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { playLevelUp } from '../../utils/sound'
 
 export default function LevelUpModal({ level, onClose }) {
+  useEffect(() => { if (level) playLevelUp() }, [level])
   if (!level) return null
 
   return (

@@ -18,12 +18,20 @@ export default function App() {
 
   // Apply theme
   useEffect(() => {
-    const theme = data.settings?.theme || 'light'
-    document.documentElement.classList.toggle('dark', theme === 'dark')
+    const theme = data.settings?.theme || 'system'
+    if (theme === 'system') {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)')
+      document.documentElement.classList.toggle('dark', mql.matches)
+      const handler = e => document.documentElement.classList.toggle('dark', e.matches)
+      mql.addEventListener('change', handler)
+      return () => mql.removeEventListener('change', handler)
+    } else {
+      document.documentElement.classList.toggle('dark', theme === 'dark')
+    }
   }, [data.settings?.theme])
 
   const navigateTo = (targetPage, state = null) => {
-    if (targetPage === 'quiz' && state) setQuizState(state)
+    if (targetPage === 'quiz') setQuizState(state)
     setPage(targetPage)
   }
 

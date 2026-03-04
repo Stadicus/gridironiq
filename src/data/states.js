@@ -34,7 +34,7 @@ export const STATES = [
     abbr:'VT', name:'Vermont', capital:'Montpelier', region:'Northeast',
     admitted:1791, nickname:'The Green Mountain State', lat:44.0, lng:-72.7,
     landmarks:['Stowe Mountain Resort','Lake Champlain','Shelburne Museum','Green Mountain National Forest'],
-    famousPeople:['Calvin Coolidge','Bernie Sanders','Rudyard Kipling (lived there)','Ben Cohen & Jerry Greenfield'],
+    famousPeople:['Calvin Coolidge','Bernie Sanders','Rudyard Kipling (lived there)','John Deere'],
     nflTeams:[],
     funFacts:['Smallest state capital by population (Montpelier)','Has more cows than people']
   },
@@ -49,7 +49,7 @@ export const STATES = [
   {
     abbr:'RI', name:'Rhode Island', capital:'Providence', region:'Northeast',
     admitted:1790, nickname:'The Ocean State', lat:41.68, lng:-71.5,
-    landmarks:['The Breakers (Newport Mansion)','Cliff Walk','Roger Williams Park','WaterFire Providence'],
+    landmarks:['The Breakers','Cliff Walk','Roger Williams Park','WaterFire'],
     famousPeople:['H.P. Lovecraft','George M. Cohan','David Byrne','Nick Lachey','Patrick Kennedy'],
     nflTeams:[],
     funFacts:['Smallest state by area in the US','First colony to declare independence from Britain (1776)']
@@ -97,7 +97,7 @@ export const STATES = [
   {
     abbr:'MD', name:'Maryland', capital:'Annapolis', region:'Northeast',
     admitted:1788, nickname:'The Old Line State', lat:39.0, lng:-76.8,
-    landmarks:['Inner Harbor (Baltimore)','U.S. Naval Academy','Assateague Island','Antietam National Battlefield'],
+    landmarks:['Inner Harbor','U.S. Naval Academy','Assateague Island','Antietam National Battlefield'],
     famousPeople:['Frederick Douglass','Babe Ruth','Thurgood Marshall','Michael Phelps','Edgar Allan Poe (lived)'],
     nflTeams:['Baltimore Ravens'],
     funFacts:['National Anthem written by Marylander Francis Scott Key','Home to the Chesapeake Bay, the largest estuary in the US']
@@ -147,7 +147,7 @@ export const STATES = [
   {
     abbr:'FL', name:'Florida', capital:'Tallahassee', region:'Southeast',
     admitted:1845, nickname:'The Sunshine State', lat:28.5, lng:-81.5,
-    landmarks:['Everglades National Park','Kennedy Space Center','Walt Disney World','South Beach Miami'],
+    landmarks:['Everglades National Park','Kennedy Space Center','Walt Disney World','South Beach'],
     famousPeople:['Sidney Poitier','Jim Morrison','Faye Dunaway','Hulk Hogan','Gloria Estefan'],
     nflTeams:['Miami Dolphins','Jacksonville Jaguars','Tampa Bay Buccaneers'],
     funFacts:['Florida has more golf courses than any other state','More lightning strikes than any other state — nicknamed the "Lightning Capital of the US"']
@@ -187,7 +187,7 @@ export const STATES = [
   {
     abbr:'AR', name:'Arkansas', capital:'Little Rock', region:'Southeast',
     admitted:1836, nickname:'The Natural State', lat:34.8, lng:-92.2,
-    landmarks:['Hot Springs National Park','Crater of Diamonds State Park','Crystal Bridges Museum','Buffalo National River'],
+    landmarks:['Hot Springs National Park','Crater of Diamonds State Park','Crystal Bridges Museum of American Art','Buffalo National River'],
     famousPeople:['Bill Clinton','Hillary Clinton','Johnny Cash','Sam Walton','Scott Joplin'],
     nflTeams:[],
     funFacts:['Only state in the US where diamonds are found naturally (Crater of Diamonds SP)','Walmart was founded in Rogers, Arkansas (1962)']
@@ -195,7 +195,7 @@ export const STATES = [
   {
     abbr:'LA', name:'Louisiana', capital:'Baton Rouge', region:'Southeast',
     admitted:1812, nickname:'The Pelican State', lat:31.0, lng:-91.8,
-    landmarks:['French Quarter (New Orleans)','Oak Alley Plantation','Avery Island','Bayou Country'],
+    landmarks:['French Quarter','Oak Alley Plantation','Avery Island','Atchafalaya Basin'],
     famousPeople:['Louis Armstrong','Truman Capote','Britney Spears','Lil Wayne','Fats Domino'],
     nflTeams:['New Orleans Saints'],
     funFacts:['Louisiana is the only state with parishes instead of counties','New Orleans hosts Mardi Gras, the largest street party in North America']
@@ -205,7 +205,7 @@ export const STATES = [
   {
     abbr:'OH', name:'Ohio', capital:'Columbus', region:'Midwest',
     admitted:1803, nickname:'The Buckeye State', lat:40.4, lng:-82.8,
-    landmarks:['Rock & Roll Hall of Fame','Cedar Point Amusement Park','Wright Brothers National Museum','Hocking Hills State Park'],
+    landmarks:['Rock and Roll Hall of Fame','Cedar Point','National Museum of the United States Air Force','Hocking Hills State Park'],
     famousPeople:['Neil Armstrong','John Glenn','Steven Spielberg','LeBron James','Sheryl Crow'],
     nflTeams:['Cleveland Browns','Cincinnati Bengals'],
     funFacts:['7 US presidents were born in Ohio, more than any other state except Virginia','The Rock & Roll Hall of Fame is located in Cleveland because rock and roll disc jockey Alan Freed was from Ohio']
@@ -229,7 +229,7 @@ export const STATES = [
   {
     abbr:'WI', name:'Wisconsin', capital:'Madison', region:'Midwest',
     admitted:1848, nickname:'The Badger State', lat:44.5, lng:-89.5,
-    landmarks:['Wisconsin Dells','Door County','Lambeau Field (Green Bay)','House on the Rock'],
+    landmarks:['Wisconsin Dells','Door County','Lambeau Field','House on the Rock'],
     famousPeople:['Frank Lloyd Wright','Orson Welles','Harry Houdini','Liberace','Gene Wilder'],
     nflTeams:['Green Bay Packers'],
     funFacts:['Wisconsin produces more cheese than any other US state','Green Bay Packers are the only publicly owned franchise in major US professional sports']
@@ -237,7 +237,7 @@ export const STATES = [
   {
     abbr:'IL', name:'Illinois', capital:'Springfield', region:'Midwest',
     admitted:1818, nickname:'The Land of Lincoln', lat:40.35, lng:-88.99,
-    landmarks:['Navy Pier','Willis Tower (Sears Tower)','Route 66 Museum (Springfield)','Starved Rock State Park'],
+    landmarks:['Navy Pier','Willis Tower','Abraham Lincoln Presidential Library and Museum','Starved Rock State Park'],
     famousPeople:['Abraham Lincoln','Barack Obama','Walt Disney (born)','Harrison Ford','Michelle Obama'],
     nflTeams:['Chicago Bears'],
     funFacts:['Chicago is nicknamed "The Windy City" — not because of its weather, but because of its boastful politicians','Springfield, the state capital, was once home to Abraham Lincoln for 24 years']
@@ -269,7 +269,7 @@ export const STATES = [
   {
     abbr:'ND', name:'North Dakota', capital:'Bismarck', region:'Midwest',
     admitted:1889, nickname:'The Peace Garden State', lat:47.5, lng:-100.5,
-    landmarks:['Theodore Roosevelt National Park','International Peace Garden','Bonanzaville Pioneer Village','Fort Abraham Lincoln'],
+    landmarks:['Theodore Roosevelt National Park','International Peace Garden','Bonanzaville, USA','Fort Abraham Lincoln'],
     famousPeople:['Louis L\'Amour','Roger Maris','Angie Dickinson','Phil Jackson','Lawrence Welk'],
     nflTeams:[],
     funFacts:['North Dakota and South Dakota became states on the same day (Nov 2, 1889)','North Dakota is the leading honey-producing state in the US']
@@ -285,7 +285,7 @@ export const STATES = [
   {
     abbr:'NE', name:'Nebraska', capital:'Lincoln', region:'Midwest',
     admitted:1867, nickname:'The Cornhusker State', lat:41.5, lng:-99.9,
-    landmarks:['Chimney Rock National Historic Site','Henry Doorly Zoo (Omaha)','Scotts Bluff National Monument','Sandhills'],
+    landmarks:['Chimney Rock National Historic Site','Henry Doorly Zoo and Aquarium','Scotts Bluff National Monument','Sandhills (Nebraska)'],
     famousPeople:['Warren Buffett','Johnny Carson','Malcolm X (born)','Fred Astaire','Henry Fonda'],
     nflTeams:[],
     funFacts:['Nebraska is the only state that has a unicameral (single-chamber) legislature','More miles of river than any other state in the contiguous US']
@@ -293,7 +293,7 @@ export const STATES = [
   {
     abbr:'KS', name:'Kansas', capital:'Topeka', region:'Midwest',
     admitted:1861, nickname:'The Sunflower State', lat:38.5, lng:-98.4,
-    landmarks:['Dodge City','Wizard of Oz Museum (Liberal)','Brown v. Board of Education National Historic Site','Eisenhower Presidential Library'],
+    landmarks:['Dodge City','Tallgrass Prairie National Preserve','Brown v. Board of Education National Historic Site','Eisenhower Presidential Library and Museum'],
     famousPeople:['Dwight D. Eisenhower','Amelia Earhart','Carry Nation','Bob Dole','Dennis Hopper'],
     nflTeams:['Kansas City Chiefs'],
     funFacts:['Geographic center of the contiguous United States is near Lebanon, Kansas','Kansas grows enough wheat each year to feed everyone in the world for two weeks']
@@ -303,7 +303,7 @@ export const STATES = [
   {
     abbr:'TX', name:'Texas', capital:'Austin', region:'Southwest',
     admitted:1845, nickname:'The Lone Star State', lat:31.5, lng:-99.3,
-    landmarks:['The Alamo','Big Bend National Park','NASA Johnson Space Center','San Antonio River Walk'],
+    landmarks:['The Alamo','Big Bend National Park','Johnson Space Center','San Antonio River Walk'],
     famousPeople:['Sam Houston','Lyndon B. Johnson','George W. Bush','Beyoncé','Matthew McConaughey'],
     nflTeams:['Dallas Cowboys','Houston Texans'],
     funFacts:['Texas is the second-largest state by both area and population','The King Ranch in Texas is larger than the entire state of Rhode Island']
@@ -327,7 +327,7 @@ export const STATES = [
   {
     abbr:'AZ', name:'Arizona', capital:'Phoenix', region:'Southwest',
     admitted:1912, nickname:'The Grand Canyon State', lat:34.2, lng:-111.5,
-    landmarks:['Grand Canyon National Park','Monument Valley','Sedona Red Rocks','Saguaro National Park'],
+    landmarks:['Grand Canyon National Park','Monument Valley','Sedona, Arizona','Saguaro National Park'],
     famousPeople:['César Chávez','Linda Ronstadt','Alice Cooper','Emma Stone','Frank Lloyd Wright (lived)'],
     nflTeams:['Arizona Cardinals'],
     funFacts:['Grand Canyon is 277 miles long, up to 18 miles wide, and over a mile deep','Arizona does not observe Daylight Saving Time (except the Navajo Nation)']
@@ -361,7 +361,7 @@ export const STATES = [
   {
     abbr:'ID', name:'Idaho', capital:'Boise', region:'West',
     admitted:1890, nickname:'The Gem State', lat:44.4, lng:-114.6,
-    landmarks:['Craters of the Moon National Monument','Sun Valley Ski Resort','Shoshone Falls','City of Rocks'],
+    landmarks:['Craters of the Moon National Monument','Sun Valley Resort','Shoshone Falls','City of Rocks National Reserve'],
     famousPeople:['Ezra Pound','Picabo Street','Harmon Killebrew','Gutzon Borglum (sculptor of Mt. Rushmore)','Philo Farnsworth (TV inventor)'],
     nflTeams:[],
     funFacts:['Idaho produces more than a third of all potatoes grown in the US','Hell\'s Canyon on the Idaho-Oregon border is deeper than the Grand Canyon']
@@ -385,7 +385,7 @@ export const STATES = [
   {
     abbr:'CA', name:'California', capital:'Sacramento', region:'West',
     admitted:1850, nickname:'The Golden State', lat:36.8, lng:-119.4,
-    landmarks:['Golden Gate Bridge','Yosemite National Park','Disneyland','Hollywood Walk of Fame','Redwood National Park'],
+    landmarks:['Golden Gate Bridge','Yosemite National Park','Disneyland','Hollywood Walk of Fame','Redwood National and State Parks'],
     famousPeople:['Richard Nixon','Ronald Reagan','Steve Jobs','Marilyn Monroe','Tiger Woods'],
     nflTeams:['San Francisco 49ers','Los Angeles Rams','Los Angeles Chargers'],
     funFacts:['California has the largest economy of any US state and would rank 5th globally if it were a country','Sequoia National Park is home to the General Sherman Tree, the largest living tree on Earth by volume']
@@ -394,7 +394,7 @@ export const STATES = [
     abbr:'NV', name:'Nevada', capital:'Carson City', region:'West',
     admitted:1864, nickname:'The Silver State', lat:39.5, lng:-116.9,
     landmarks:['Las Vegas Strip','Hoover Dam','Great Basin National Park','Valley of Fire State Park'],
-    famousPeople:['Pat Nixon','Greg LeMond','Nevada\'s Sage Hen (state bird trivia!)','André Agassi','Wayne Newton'],
+    famousPeople:['Pat Nixon','Greg LeMond','André Agassi','Wayne Newton','Jack Kramer'],
     nflTeams:['Las Vegas Raiders'],
     funFacts:['Nevada is the driest state in the US','More gold is mined in Nevada than in any other US state']
   },
@@ -409,15 +409,15 @@ export const STATES = [
   {
     abbr:'AK', name:'Alaska', capital:'Juneau', region:'West',
     admitted:1959, nickname:'The Last Frontier', lat:64.0, lng:-153.0,
-    landmarks:['Denali National Park','Glacier Bay National Park','Kenai Fjords National Park','Northern Lights (Aurora Borealis)'],
-    famousPeople:['Sarah Palin','Jewel','Carl Ben Eielson','Jefferson Davis (born)... wait','Libby Riddles (first woman to win Iditarod)'],
+    landmarks:['Denali National Park and Preserve','Glacier Bay National Park and Preserve','Kenai Fjords National Park','Aurora borealis'],
+    famousPeople:['Sarah Palin','Jewel','Carl Ben Eielson','Susan Butcher','Libby Riddles'],
     nflTeams:[],
     funFacts:['Alaska is the largest state by area — bigger than the next three largest states combined','The sun doesn\'t set in Barrow, Alaska for 84 days each summer']
   },
   {
     abbr:'HI', name:'Hawaii', capital:'Honolulu', region:'West',
     admitted:1959, nickname:'The Aloha State', lat:20.5, lng:-157.0,
-    landmarks:['Pearl Harbor National Memorial','Na Pali Coast','Kilauea Volcano','Haleakala National Park','Waimea Canyon'],
+    landmarks:['Pearl Harbor National Memorial','Nā Pali Coast','Kīlauea','Haleakalā National Park','Waimea Canyon State Park'],
     famousPeople:['Barack Obama','Bruno Mars','Nicole Kidman (born)','Don Ho','Bette Midler (born)'],
     nflTeams:[],
     funFacts:['Hawaii is the only US state made up entirely of islands (137 islands/atolls)','Hawaii is the only US state that grows coffee commercially']

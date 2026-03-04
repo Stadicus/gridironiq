@@ -26,8 +26,9 @@ const DEFAULT_DATA = {
     nflDivision:  { attempts: 0, correct: 0 },
     nflCity:      { attempts: 0, correct: 0 },
     nflQB:        { attempts: 0, correct: 0 },
+    nflMVP:       { attempts: 0, correct: 0 },
+    nflMixed:     { attempts: 0, correct: 0 },
     nicknames:    { attempts: 0, correct: 0 },
-    statehood:    { attempts: 0, correct: 0 },
     flags:        { attempts: 0, correct: 0 },
     waterways:    { attempts: 0, correct: 0 }
   },
@@ -43,7 +44,7 @@ const DEFAULT_DATA = {
   settings: {
     difficulty: 'medium',
     soundEnabled: true,
-    theme: 'light'
+    theme: 'system'
   }
 }
 

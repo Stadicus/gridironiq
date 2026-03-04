@@ -12,7 +12,7 @@ export default function Navbar({ currentPage, onNavigate, xpProgress, currentLev
 
   return (
     <nav className="bg-blue-800 text-white px-4 py-3 flex items-center gap-4 shadow-lg">
-      <span className="font-bold text-xl mr-2 whitespace-nowrap">🏈 Gridiron IQ</span>
+      <button onClick={() => onNavigate('dashboard')} className="font-bold text-xl mr-2 whitespace-nowrap hover:opacity-80 transition-opacity">🏈 Gridiron IQ</button>
 
       {/* Nav links */}
       <div className="flex items-center gap-1 flex-1">

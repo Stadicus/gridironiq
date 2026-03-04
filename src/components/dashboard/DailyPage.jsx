@@ -47,7 +47,7 @@ export default function DailyPage({ onNavigate, data }) {
         ) : (
           <>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">Today's Challenge</h2>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">5 mixed questions • +{DAILY_BONUS_XP} bonus XP</p>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">10 mixed questions • +{DAILY_BONUS_XP} bonus XP</p>
             <button
               onClick={() => setPlaying(true)}
               className="btn-primary mt-4 px-8 py-3 text-base"
