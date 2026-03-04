@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+  body { @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100; }
+  * { @apply select-none; }
+  input, textarea { @apply select-text; }
+}
+
+@layer components {
+  .state-path {
+    @apply cursor-pointer transition-colors duration-200;
+    stroke: #fff;
+    stroke-width: 0.5;
+  }
+  .state-path:hover { stroke: #1e40af; stroke-width: 1.5; }
+  .state-path.selected { stroke: #1e40af; stroke-width: 2; }
+  .btn-primary { @apply bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-white font-semibold px-4 py-2 rounded-xl transition-all duration-150 active:scale-95; }
+  .btn-secondary { @apply bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold px-4 py-2 rounded-xl border border-slate-200 transition-all duration-150 active:scale-95 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700; }
+  .card { @apply bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-4; }
+}
+
+/* Safe area insets for iOS */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-top { padding-top: env(safe-area-inset-top); }
+
+/* Map SVG */
+svg.rsm-svg { width: 100%; height: auto; display: block; }
+
+/* Slide-up animation for state detail panel */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up 0.2s ease-out both; }
