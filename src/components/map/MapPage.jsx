@@ -35,7 +35,7 @@ export default function MapPage({ onNavigate, data }) {
       <div
         ref={mapContainerRef}
         onMouseMove={handleMouseMove}
-        className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
+        className="relative flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
       >
         <USMap
           position={position}
@@ -49,6 +49,7 @@ export default function MapPage({ onNavigate, data }) {
           showNFLLogos={showNFLLogos}
           onTeamHover={setHoveredTeam}
           onTeamLeave={() => setHoveredTeam(null)}
+          fillHeight
         />
 
         {/* Controls: top-right */}

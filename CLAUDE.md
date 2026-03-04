@@ -26,7 +26,7 @@ Single-page app with manual routing: `App.jsx` holds a `page` state string and r
 localStorage  ←→  storage.js  ←→  useProgress (hook)  →  App.jsx  →  page props
 ```
 
-- **`src/utils/storage.js`** — all persistence. Namespace `gridiron-iq:v1`. Exports atomic update functions (`recordAnswer`, `addXP`, `unlockBadge`, etc.). On every write, dispatches a `progressUpdated` CustomEvent so hooks can re-sync. New keys added to `DEFAULT_DATA` are safe for existing users (deep-merged on load).
+- **`src/utils/storage.js`** — all persistence. Namespace `gridiron-iq:v1`. Exports atomic update functions (`recordAnswer`, `addXP`, `unlockBadge`, etc.). On every write, dispatches a `progressUpdated` CustomEvent so hooks can re-sync. New keys added to `DEFAULT_DATA` are safe for existing users (deep-merged on load). `quizStats` entries are keyed by question **`type`** (e.g. `'capitals'`, `'nflLogo'`), not by mode name — so `mixed` and `nflMixed` modes don't need their own entries. Do not add a `statehood` entry; that mode was removed.
 - **`src/hooks/useProgress.js`** — listens for `progressUpdated`, exposes `submitAnswer()` which chains: calcXP → recordAnswer → addXP → checkNewBadges → level-up detection. This is the only place answers should be submitted.
 - **`App.jsx`** calls `useProgress()` once and passes `data` down to every page as a prop. Pages must not call `useProgress()` themselves (causes duplicate hook instances). When navigating to `'quiz'`, always call `setQuizState(state)` (even with null) so the quiz page resets correctly — `navigateTo('quiz')` without a state shows the overview.
 

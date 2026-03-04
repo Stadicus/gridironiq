@@ -243,6 +243,7 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
                 answered={answered}
                 correctAnswer={q.correctAnswer}
                 selectedAnswer={selectedAnswer}
+                hint={config.hintsEnabled ? q.hint : null}
               />
             ) : (
               <TypeAnswer

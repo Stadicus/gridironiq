@@ -1,7 +1,18 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 
-export default function AnswerChoices({ options, onAnswer, answered, correctAnswer, selectedAnswer }) {
+export default function AnswerChoices({ options, onAnswer, answered, correctAnswer, selectedAnswer, hint }) {
+  const [showHint, setShowHint] = useState(false)
   return (
+    <div className="flex flex-col gap-3">
+      {!answered && hint && (
+        <div>
+          {showHint
+            ? <div className="text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2">💡 {hint}</div>
+            : <button onClick={() => setShowHint(true)} className="text-xs text-slate-400 hover:text-blue-600 underline">Show hint</button>
+          }
+        </div>
+      )}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {options.map((opt, i) => {
         let bg = 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20'
@@ -34,6 +45,7 @@ export default function AnswerChoices({ options, onAnswer, answered, correctAnsw
           </motion.button>
         )
       })}
+    </div>
     </div>
   )
 }

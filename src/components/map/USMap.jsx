@@ -61,6 +61,7 @@ export default function USMap({
   showNFLLogos = false,
   onTeamHover,
   onTeamLeave,
+  fillHeight = false,
 }) {
   function getFill(abbr) {
     if (correctState && abbr === correctState) return '#22c55e'
@@ -85,15 +86,14 @@ export default function USMap({
   const isMobile = window.innerWidth < 640
   const base = isMobile ? 28 : 18
   const displayCoords = isMobile ? DISPLAY_COORDS_MOBILE : DISPLAY_COORDS_DESKTOP
-  // On desktop, logos stay a fixed screen size regardless of zoom level.
-  // On mobile they scale with zoom to avoid crowding when zoomed out.
-  const logoSize = isMobile ? base / position.zoom : base
+  // Logos stay fixed screen size regardless of zoom, on both desktop and mobile.
+  const logoSize = base
 
   return (
     <ComposableMap
       projection="geoAlbersUsa"
       projectionConfig={{ scale: 900 }}
-      style={{ width: '100%', height: 'auto' }}
+      style={{ width: '100%', height: fillHeight ? '100%' : 'auto' }}
     >
       <ZoomableGroup
         zoom={position.zoom}

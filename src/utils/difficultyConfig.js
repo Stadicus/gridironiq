@@ -10,10 +10,10 @@ export const DIFFICULTY = {
   },
   medium: {
     label: 'Traveler',
-    description: '4 choices, 30-second timer',
+    description: '4 choices, 15-second timer',
     emoji: '🧭',
     multipleChoice: true,
-    timeLimit: 30,
+    timeLimit: 15,
     hintsEnabled: false,
     questionCount: 10
   },
