@@ -12,6 +12,7 @@ import LevelUpModal from './components/gamification/LevelUpModal'
 import SplashScreen from './components/onboarding/SplashScreen'
 import WelcomeModal from './components/onboarding/WelcomeModal'
 import { getData } from './utils/storage'
+import { QUIZ_MODES } from './utils/quizGenerator'
 
 export default function App() {
   const [page, setPage] = useState('dashboard')
@@ -41,19 +42,26 @@ export default function App() {
   }, [data.settings?.theme])
 
   const navigateTo = (targetPage, state = null) => {
-    if (targetPage === 'quiz') setQuizState(state)
-    setPage(targetPage)
+    let resolved = targetPage
+    // Resolve legacy 'quiz' deep-links to the right category page
+    if (targetPage === 'quiz') {
+      const category = state?.mode ? QUIZ_MODES[state.mode]?.category : null
+      resolved = category === 'nfl' ? 'nfl' : 'geography'
+    }
+    if (resolved === 'geography' || resolved === 'nfl') setQuizState(state)
+    setPage(resolved)
   }
 
   const renderPage = () => {
     switch (page) {
-      case 'dashboard': return <Dashboard onNavigate={navigateTo} data={data} />
-      case 'map':       return <MapPage onNavigate={navigateTo} data={data} />
-      case 'quiz':      return <QuizPage onNavigate={navigateTo} initialState={quizState} data={data} />
-      case 'daily':     return <DailyPage onNavigate={navigateTo} data={data} />
-      case 'progress':  return <ProgressPage onNavigate={navigateTo} data={data} />
-      case 'settings':  return <SettingsPage onNavigate={navigateTo} data={data} />
-      default:          return <Dashboard onNavigate={navigateTo} data={data} />
+      case 'dashboard':  return <Dashboard onNavigate={navigateTo} data={data} />
+      case 'map':        return <MapPage onNavigate={navigateTo} data={data} />
+      case 'geography':  return <QuizPage category="geography" onNavigate={navigateTo} initialState={quizState} data={data} />
+      case 'nfl':        return <QuizPage category="nfl" onNavigate={navigateTo} initialState={quizState} data={data} />
+      case 'daily':      return <DailyPage onNavigate={navigateTo} data={data} />
+      case 'progress':   return <ProgressPage onNavigate={navigateTo} data={data} />
+      case 'settings':   return <SettingsPage onNavigate={navigateTo} data={data} />
+      default:           return <Dashboard onNavigate={navigateTo} data={data} />
     }
   }
 

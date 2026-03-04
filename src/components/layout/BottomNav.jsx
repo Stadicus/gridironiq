@@ -1,7 +1,8 @@
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Home',    emoji: '🏠' },
   { id: 'map',       label: 'Map',     emoji: '🗺️' },
-  { id: 'quiz',      label: 'Quiz',    emoji: '🎯' },
+  { id: 'geography', label: 'Geo',     emoji: '🌎' },
+  { id: 'nfl',       label: 'NFL',     emoji: '🏈' },
   { id: 'daily',     label: 'Daily',   emoji: '📅' },
   { id: 'progress',  label: 'Progress', emoji: '📊' }
 ]

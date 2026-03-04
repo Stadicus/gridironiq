@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import QuizEngine from './QuizEngine'
 import { QUIZ_MODES } from '../../utils/quizGenerator'
 import { DIFFICULTY } from '../../utils/difficultyConfig'
@@ -7,10 +7,6 @@ import { DIFFICULTY } from '../../utils/difficultyConfig'
 const GEO_MODES = Object.values(QUIZ_MODES).filter(m => m.category === 'geography')
 const NFL_MODES = Object.values(QUIZ_MODES).filter(m => m.category === 'nfl')
 
-const TABS = [
-  { id: 'geography', label: 'Geography', emoji: '🌎', modes: GEO_MODES },
-  { id: 'nfl',       label: 'NFL',       emoji: '🏈', modes: NFL_MODES },
-]
 
 function ModeGrid({ modes, onSelect }) {
   const [activeMode, setActiveMode] = useState(null)
@@ -49,13 +45,13 @@ function ModeGrid({ modes, onSelect }) {
   )
 }
 
-export default function QuizPage({ onNavigate, initialState, data }) {
+export default function QuizPage({ onNavigate, initialState, data, category }) {
   const [mode, setMode] = useState(initialState?.mode || null)
   const [difficulty, setDifficulty] = useState(initialState?.difficulty || data?.settings?.difficulty || 'medium')
   const [started, setStarted] = useState(!!initialState?.mode)
-  const [activeTab, setActiveTab] = useState(() =>
-    QUIZ_MODES[initialState?.mode]?.category === 'nfl' ? 'nfl' : 'geography'
-  )
+
+  const modes = category === 'nfl' ? NFL_MODES : GEO_MODES
+  const heading = category === 'nfl' ? { emoji: '🏈', label: 'NFL Quizzes' } : { emoji: '🌎', label: 'Geography Quizzes' }
 
   function handleModeSelect(id) {
     setMode(id)
@@ -73,44 +69,16 @@ export default function QuizPage({ onNavigate, initialState, data }) {
     )
   }
 
-  const currentTab = TABS.find(t => t.id === activeTab)
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6">
 
-      {/* ── Tab bar ──────────────────────────────────────────────────────── */}
-      <div className="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 gap-1">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => { setActiveTab(tab.id); setMode(null) }}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-              activeTab === tab.id
-                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-            }`}
-          >
-            <span>{tab.emoji}</span>
-            <span>{tab.label} Quizzes</span>
-          </button>
-        ))}
-      </div>
+      {/* ── Heading ──────────────────────────────────────────────────────── */}
+      <h1 className="text-xl font-bold text-slate-800 dark:text-white">
+        {heading.emoji} {heading.label}
+      </h1>
 
-      {/* ── Mode grid for active tab ─────────────────────────────────────── */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, x: activeTab === 'nfl' ? 20 : -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
-        >
-          <ModeGrid
-            modes={currentTab.modes}
-            onSelect={handleModeSelect}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* ── Mode grid ────────────────────────────────────────────────────── */}
+      <ModeGrid modes={modes} onSelect={handleModeSelect} />
 
       {/* ── Difficulty ───────────────────────────────────────────────────── */}
       <div className="card">

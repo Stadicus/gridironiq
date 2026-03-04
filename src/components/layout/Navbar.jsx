@@ -1,10 +1,11 @@
 const NAV_ITEMS = [
-  { id: 'dashboard', label: 'Home', emoji: '🏠' },
-  { id: 'map',       label: 'Map',  emoji: '🗺️' },
-  { id: 'quiz',      label: 'Quiz', emoji: '🎯' },
-  { id: 'daily',     label: 'Daily',emoji: '📅' },
-  { id: 'progress',  label: 'Progress', emoji: '📊' },
-  { id: 'settings',  label: 'Settings', emoji: '⚙️' }
+  { id: 'dashboard', label: 'Home',      emoji: '🏠' },
+  { id: 'map',       label: 'Map',       emoji: '🗺️' },
+  { id: 'geography', label: 'Geography', emoji: '🌎' },
+  { id: 'nfl',       label: 'NFL',       emoji: '🏈' },
+  { id: 'daily',     label: 'Daily',     emoji: '📅' },
+  { id: 'progress',  label: 'Progress',  emoji: '📊' },
+  { id: 'settings',  label: 'Settings',  emoji: '⚙️' }
 ]
 
 export default function Navbar({ currentPage, onNavigate, xpProgress, currentLevel, streak }) {
