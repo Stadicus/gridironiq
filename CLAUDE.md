@@ -16,6 +16,22 @@ npm run preview    # Preview production build locally
 
 No linter or test suite is configured. Verify changes with `npm run build` — it catches import errors and type issues via Vite's transform step.
 
+## Development Notes
+
+### Adding new quiz content
+
+When adding new states, landmarks, famous people, or NFL data:
+1. Update `src/data/states.js`, `src/data/nfl.js`, or `src/data/waterways.js`
+2. Run `node scripts/download-images.py` to fetch images for new items
+3. Verify images appear in `public/images/` and in `src/data/imageManifest.js`
+4. Test with `npm run dev` to ensure images load in quiz questions
+
+### Image troubleshooting
+
+- **Image not showing in quiz:** Check that `imageManifest.js` has an entry for the title (exact match, case-sensitive).
+- **Failed image downloads:** Some Wikipedia images may not have thumbnails. Run the script to capture a report of failures. Either manually download replacements or use a fallback question without images.
+- **Local image path not found:** If an image exists in `public/images/` but isn't in the manifest, rerun `node scripts/download-images.py` to regenerate.
+
 ## Architecture
 
 Single-page app with manual routing: `App.jsx` holds a `page` state string and renders the active page component via a switch. Navigation is passed down as `onNavigate(page, state?)`. There is no React Router.
@@ -50,11 +66,27 @@ Two tab categories in `QuizPage.jsx`:
 
 ### Images
 
-**`src/utils/imageCache.js`** — two-level cache:
-1. `fetchWikiData(title)` — fetches `/api/rest_v1/page/summary/{title}`, caches metadata in `wikiCache`. Returns `{ imageUrl, bio }` where `bio` is the first two sentences of the Wikipedia extract.
-2. `cacheImageUrl(url)` — fetches any image URL as a blob, stores as `blob://` URL in `blobCache`. Used for both wiki thumbnails and ESPN logo URLs. Both caches are in-memory per session.
+**`src/utils/imageCache.js`** — three-level cache:
+1. **Local manifest** (lazy-loaded) — checks `IMAGE_MANIFEST` (mapped to `/images/{category}/{filename}`) before any network request. Avoids browser top-level await by lazy-loading on first use in `getManifest()`.
+2. **Session blob cache** (`blobCache`) — for ESPN URLs / Wikipedia thumbnails not in local manifest, fetches once and caches as `blob://` URLs in-memory.
+3. **Remote fallback** — if image is missing locally, falls back to Wikipedia API (`/api/rest_v1/page/summary/{title}`) or ESPN CDN.
 
-Landmark `wikiTitle` values are used **without any name cleaning** (unlike `famousPeople` which runs `cleanPersonName`). Parenthetical suffixes in landmark names will break the Wikipedia lookup — always use exact Wikipedia article titles.
+Functions:
+- `fetchWikiData(title)` — checks manifest first; if found, returns local path. Otherwise fetches Wikipedia summary API, caches metadata in `wikiCache`. Returns `{ imageUrl, bio }` where `bio` is the first two sentences of Wikipedia extract.
+- `cacheImageUrl(url)` — checks manifest for ESPN logo URLs. If not found, fetches blob and stores in `blobCache`.
+
+**Local image files** (552 total):
+- **`public/images/{category}/`** — organized by type: `nfl-logos/`, `capitals/`, `flags/`, `landmarks/`, `famous-people/`, `stadiums/`, `players/`, `waterways/`
+- **`src/data/imageManifest.js`** — auto-generated mapping (e.g., `"Maine State House" → "/images/capitals/maine-state-house.jpg"`)
+- **`src/data/imageAttribution.json`** — source/license metadata for each image (CC BY-SA 3.0 for Wikipedia, ESPN proprietary for logos)
+
+**Regenerating images** (if needed):
+```bash
+node scripts/download-images.py
+```
+This re-downloads missing images, skips existing ones (idempotent), and regenerates the manifest and attribution files.
+
+**Landmark lookups:** Landmark `wikiTitle` values are used **without any name cleaning** (unlike `famousPeople` which runs `cleanPersonName`). Parenthetical suffixes in landmark names will break the Wikipedia lookup — always use exact Wikipedia article titles.
 
 ### Sound
 
@@ -64,8 +96,15 @@ Landmark `wikiTitle` values are used **without any name cleaning** (unlike `famo
 
 - **`USMap.jsx`** uses `react-simple-maps` (`ComposableMap` + `ZoomableGroup` + `Geographies` + `Marker`). TopoJSON from jsDelivr CDN. State fill colors from `getMasteryColor(abbr, stateProgress)`.
 - **`useMap.js`** holds viewport state. Two presets: full US (`[-96, 38]` zoom 1) and NE zoom (`[-72.5, 43.5]` zoom 6).
-- NFL logo markers use `NFL_COORDS` from `nfl.js` and ESPN CDN. A force-directed `spreadMarkers()` algorithm (precomputed at module load) prevents logo overlap. Desktop logos stay fixed screen size regardless of zoom; mobile logos scale with zoom.
+- NFL logo markers use `NFL_COORDS` from `nfl.js` and ESPN CDN. A force-directed `spreadMarkers()` algorithm (precomputed at module load) prevents logo overlap. Logos stay fixed screen size regardless of zoom on both desktop and mobile.
 - On the Map page, hovering a state shows a cursor-following name tooltip (only when NFL logos are hidden). Clicking opens a full state info modal.
+
+### Difficulty levels
+
+Defined in `src/utils/difficultyConfig.js`:
+- **Explorer** (`easy`) — multiple choice, no timer, hints enabled (`hintsEnabled: true` passes `q.hint` to both `AnswerChoices` and `TypeAnswer`)
+- **Traveler** (`medium`) — multiple choice, 15s timer, no hints
+- **Expert** (`hard`) — free-text input (`TypeAnswer`), 15s timer, no hints
 
 ### Gamification
 

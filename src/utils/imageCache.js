@@ -6,6 +6,24 @@ const blobCache = {}
 // Wikipedia summary metadata cache (URL + description + bio)
 const wikiCache = {}
 
+// Local image manifest — lazy-loaded on first use
+let manifest = null
+let manifestLoaded = false
+
+async function getManifest() {
+  if (manifestLoaded) return manifest
+  manifestLoaded = true
+  try {
+    const { IMAGE_MANIFEST } = await import('../data/imageManifest.js')
+    manifest = IMAGE_MANIFEST
+    return manifest
+  } catch {
+    // Manifest not generated yet — will fall back to remote fetching
+    manifest = {}
+    return manifest
+  }
+}
+
 function firstTwoSentences(text) {
   const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) || []
   return sentences.slice(0, 2).join('').trim()
@@ -14,10 +32,21 @@ function firstTwoSentences(text) {
 /**
  * Fetches any image URL and caches it as a blob:// URL for the session.
  * Returns the blob URL (or the original URL as fallback on error).
+ *
+ * First checks the local manifest for ESPN logo URLs.
  */
 export async function cacheImageUrl(url) {
   if (!url) return null
   if (url in blobCache) return blobCache[url]
+
+  // Check if we have a local image for this URL (e.g., ESPN logo)
+  const m = await getManifest()
+  if (url in m) {
+    const localPath = m[url]
+    blobCache[url] = localPath
+    return localPath
+  }
+
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
     if (!res.ok) { blobCache[url] = url; return url }
@@ -35,11 +64,23 @@ export async function cacheImageUrl(url) {
  * Fetches Wikipedia summary data.
  * Returns { imageUrl: blob URL|null, description: string|null, bio: string|null }
  * The image itself is blob-cached via cacheImageUrl.
+ *
+ * First checks the local image manifest; if present, returns the local path directly.
+ * Falls back to Wikipedia API if no local image is available.
  */
 export async function fetchWikiData(title, width = 400) {
   if (!title) return { imageUrl: null, description: null, bio: null }
   const key = `${title}::${width}`
   if (key in wikiCache) return wikiCache[key]
+
+  // Check if we have a local image for this title
+  const m = await getManifest()
+  if (title in m) {
+    const localPath = m[title]
+    const result = { imageUrl: localPath, description: null, bio: null }
+    wikiCache[key] = result
+    return result
+  }
 
   try {
     const res = await fetch(
