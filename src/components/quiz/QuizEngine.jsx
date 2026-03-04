@@ -107,7 +107,8 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
   const isMapClick = q?.mapClick === true
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-4 flex flex-col gap-4">
+    <>
+    <div className="max-w-xl mx-auto px-4 pt-4 pb-20 md:pb-4 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <button onClick={() => { quiz.exitQuiz(); onExit?.() }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm">
@@ -128,16 +129,6 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
           style={{ width: `${((quiz.index + (answered ? 1 : 0)) / quiz.questions.length) * 100}%` }}
         />
       </div>
-
-      {/* Timer */}
-      {config.timeLimit && q && (
-        <QuizTimer
-          key={timerKey}
-          seconds={config.timeLimit}
-          onExpire={handleTimerExpire}
-          active={timerActive}
-        />
-      )}
 
       {/* Question */}
       <AnimatePresence mode="wait">
@@ -254,26 +245,62 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
               />
             )}
 
-            {/* Feedback + Next */}
-            {answered && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-between"
-              >
-                <div className={`text-sm font-bold ${quiz.lastAnswerCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}>
-                  {quiz.lastAnswerCorrect
-                    ? `✓ Correct! +${quiz.lastXP} XP`
-                    : '✗ Not quite — keep going!'}
-                </div>
-                <button onClick={quiz.nextQuestion} className="btn-primary px-5 py-2">
-                  {quiz.index + 1 >= quiz.questions.length ? 'See Results →' : 'Next →'}
-                </button>
-              </motion.div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+
+    {/* Sticky action bar — fixed above bottom nav on mobile, sticky at bottom on desktop */}
+    <div className="fixed md:sticky bottom-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
+      <div className="max-w-xl mx-auto px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px)+3.25rem)] md:pb-3 flex items-center gap-3 min-h-[52px]">
+        {/* Left: timer while answering, feedback after answered */}
+        <div className="flex-1 min-w-0">
+          <AnimatePresence mode="wait">
+            {answered ? (
+              <motion.div
+                key="feedback"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className={`text-sm font-bold truncate ${quiz.lastAnswerCorrect ? 'text-green-600 dark:text-green-400' : 'text-red-500'}`}
+              >
+                {quiz.lastAnswerCorrect
+                  ? `✓ Correct! +${quiz.lastXP} XP`
+                  : '✗ Not quite — keep going!'}
+              </motion.div>
+            ) : config.timeLimit && q ? (
+              <motion.div key="timer" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <QuizTimer
+                  key={timerKey}
+                  seconds={config.timeLimit}
+                  onExpire={handleTimerExpire}
+                  active={timerActive}
+                />
+              </motion.div>
+            ) : (
+              <div key="empty" />
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Right: Next / See Results button */}
+        <AnimatePresence>
+          {answered && (
+            <motion.button
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 12 }}
+              transition={{ duration: 0.18 }}
+              onClick={quiz.nextQuestion}
+              className="btn-primary px-5 py-2 whitespace-nowrap flex-shrink-0"
+            >
+              {quiz.index + 1 >= quiz.questions.length ? 'See Results →' : 'Next →'}
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+    </>
   )
 }
