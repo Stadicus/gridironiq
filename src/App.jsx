@@ -9,12 +9,22 @@ import SettingsPage from './components/settings/SettingsPage'
 import { useProgress } from './hooks/useProgress'
 import BadgeUnlockModal from './components/gamification/BadgeUnlockModal'
 import LevelUpModal from './components/gamification/LevelUpModal'
+import SplashScreen from './components/onboarding/SplashScreen'
+import WelcomeModal from './components/onboarding/WelcomeModal'
 import { getData } from './utils/storage'
 
 export default function App() {
   const [page, setPage] = useState('dashboard')
   const [quizState, setQuizState] = useState(null) // { mode, difficulty, region }
+  const [splashDone, setSplashDone] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false)
   const { data, xpProgress, currentLevel, newBadges, leveledUp, dismissBadge, dismissLevelUp } = useProgress()
+
+  // Show welcome modal after splash if first time
+  const handleSplashDone = () => {
+    setSplashDone(true)
+    if (!getData().hasSeenWelcome) setShowWelcome(true)
+  }
 
   // Apply theme
   useEffect(() => {
@@ -59,6 +69,11 @@ export default function App() {
       )}
       {newBadges.length > 0 && (
         <BadgeUnlockModal badgeId={newBadges[0]} onClose={() => dismissBadge(newBadges[0])} />
+      )}
+
+      <SplashScreen onDone={handleSplashDone} />
+      {splashDone && showWelcome && (
+        <WelcomeModal onClose={() => setShowWelcome(false)} />
       )}
     </>
   )

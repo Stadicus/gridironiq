@@ -2,6 +2,7 @@ const NS = 'gridiron-iq:v1'
 
 const DEFAULT_DATA = {
   version: 1,
+  hasSeenWelcome: false,
   profile: {
     totalXP: 0,
     level: 1,
@@ -198,6 +199,13 @@ export function importData(json) {
   } catch {
     return false
   }
+}
+
+export function markWelcomeSeen() {
+  return update(data => {
+    data.hasSeenWelcome = true
+    return data
+  })
 }
 
 export function resetAll() {
