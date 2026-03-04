@@ -67,4 +67,4 @@ Modes are split into two categories rendered as tabs in `QuizPage.jsx`:
 
 ### Storage schema
 
-Key `usstates:v1` in localStorage. Top-level keys: `profile`, `streaks`, `quizStats`, `stateProgress`, `badges`, `dailyChallenge`, `settings`. New keys are deep-merged on load, so adding fields to `DEFAULT_DATA` in `storage.js` is safe for existing users.
+Key `gridiron-iq:v1` in localStorage. Top-level keys: `profile`, `streaks`, `quizStats`, `stateProgress`, `badges`, `dailyChallenge`, `settings`. New keys are deep-merged on load, so adding fields to `DEFAULT_DATA` in `storage.js` is safe for existing users.

@@ -1,4 +1,4 @@
-const NS = 'usstates:v1'
+const NS = 'gridiron-iq:v1'
 
 const DEFAULT_DATA = {
   version: 1,

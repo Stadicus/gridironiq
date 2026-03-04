@@ -1,4 +1,4 @@
-# US States Quiz — Setup
+# Gridiron IQ — Setup
 
 ## Quick Start
 
@@ -19,28 +19,12 @@ npm run build
 npm run preview   # Preview the build locally
 ```
 
-## Node.js Not Installed?
-
-Download from https://nodejs.org/ (LTS version recommended)
-
-After installing, restart your terminal and run `npm install`.
-
-## PWA Icons
-
-To enable the "Install App" feature, generate PWA icons:
-1. Open https://www.pwabuilder.com/imageGenerator
-2. Upload `public/favicon.svg`
-3. Download the icon pack
-4. Place `icon-192.png` and `icon-512.png` in `public/icons/`
-
-Or run `node generate-icons.js` for instructions.
-
 ## Features
 
-- 🗺️ **Interactive US Map** — click states, zoom into NE small states
-- 🎯 **6 Quiz Modes** — Find State, Capitals, Landmarks, Famous People, NFL Teams, NFL Stadiums
+- 🏈 **15+ Quiz Modes** — NFL teams, logos, stadiums, QBs, divisions + US state capitals, landmarks, famous people, flags, nicknames, statehood, rivers & lakes
+- 🗺️ **Interactive US Map** — click states for info, zoom into NE small states, toggle NFL team logo markers
 - 📅 **Daily Challenge** — 5 mixed questions with streak tracking
-- 🏆 **Gamification** — XP, 10 levels, 15 badges, streak system
+- 🏆 **Gamification** — XP, 10 levels, 15 badges, streak multipliers
 - 📊 **Progress Tracking** — per-state mastery, quiz breakdowns, badge collection
 - 🌙 **Dark Mode** — toggle in Settings
 - 📱 **Mobile PWA** — installable on iOS/Android
