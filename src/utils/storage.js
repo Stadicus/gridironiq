@@ -17,7 +17,8 @@ const DEFAULT_DATA = {
     longest: 0
   },
   quizStats: {
-    stateId:    { attempts: 0, correct: 0 },
+    findState:  { attempts: 0, correct: 0 },
+    nameState:  { attempts: 0, correct: 0 },
     capitals:   { attempts: 0, correct: 0 },
     landmarks:  { attempts: 0, correct: 0 },
     nfl:        { attempts: 0, correct: 0 },

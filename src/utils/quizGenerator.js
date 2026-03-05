@@ -106,7 +106,7 @@ function makeNameStateQuestion(state) {
   const allNames = STATES.map(s => s.name)
   return {
     id: `namestate_${state.abbr}_${Date.now()}`,
-    type: 'stateId',
+    type: 'nameState',
     question: 'Name this highlighted state:',
     correctAnswer: state.name,
     correctStateAbbr: state.abbr,
@@ -120,7 +120,7 @@ function makeNameStateQuestion(state) {
 function makeFindStateQuestion(state) {
   return {
     id: `findstate_${state.abbr}_${Date.now()}`,
-    type: 'stateId',
+    type: 'findState',
     mapClick: true,
     question: `Click on ${state.name} on the map`,
     correctAnswer: state.name,
@@ -319,11 +319,17 @@ function makeNflMVPQuestion(player) {
 
 export const QUIZ_MODES = {
   // ── Geography ──────────────────────────────────────────────────────────────
-  stateId: {
-    id: 'stateId',       category: 'geography',
+  findState: {
+    id: 'findState',     category: 'geography',
     label: 'Find the State',
-    description: 'Click or identify states on the map',
+    description: 'Click on the map to find each state',
     emoji: '🗺️'
+  },
+  nameState: {
+    id: 'nameState',     category: 'geography',
+    label: 'Name the State',
+    description: 'Select the correct state name from options',
+    emoji: '🏷️'
   },
   capitals: {
     id: 'capitals',      category: 'geography',
@@ -426,14 +432,22 @@ export function generateQuestions(mode, count = 10, regionFilter = null) {
     states = shuffle(states)
     const questions = []
 
-    if (mode === 'stateId') {
-      const useMapClick = Math.random() > 0.5
+    if (mode === 'findState') {
       for (const s of states.slice(0, count)) {
         try {
-          const q = useMapClick ? makeFindStateQuestion(s) : makeNameStateQuestion(s)
+          const q = makeFindStateQuestion(s)
           if (q) questions.push(q)
         } catch (err) {
-          console.warn(`Error generating stateId question for ${s?.abbr}:`, err)
+          console.warn(`Error generating findState question for ${s?.abbr}:`, err)
+        }
+      }
+    } else if (mode === 'nameState') {
+      for (const s of states.slice(0, count)) {
+        try {
+          const q = makeNameStateQuestion(s)
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating nameState question for ${s?.abbr}:`, err)
         }
       }
     } else if (mode === 'capitals') {
