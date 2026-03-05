@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import QuizEngine from './QuizEngine'
 import { QUIZ_MODES } from '../../utils/quizGenerator'
-import { DIFFICULTY } from '../../utils/difficultyConfig'
 
 const GEO_MODES = Object.values(QUIZ_MODES).filter(m => m.category === 'geography')
 const NFL_MODES = Object.values(QUIZ_MODES).filter(m => m.category === 'nfl')
@@ -47,8 +46,10 @@ function ModeGrid({ modes, onSelect }) {
 
 export default function QuizPage({ onNavigate, initialState, data, category }) {
   const [mode, setMode] = useState(initialState?.mode || null)
-  const [difficulty, setDifficulty] = useState(initialState?.difficulty || data?.settings?.difficulty || 'medium')
   const [started, setStarted] = useState(!!initialState?.mode)
+
+  // Use difficulty from settings only
+  const difficulty = data?.settings?.difficulty || 'medium'
 
   const modes = category === 'nfl' ? NFL_MODES : GEO_MODES
   const heading = category === 'nfl' ? { emoji: '🏈', label: 'NFL Quizzes' } : { emoji: '🌎', label: 'Geography Quizzes' }
@@ -80,29 +81,7 @@ export default function QuizPage({ onNavigate, initialState, data, category }) {
       {/* ── Mode grid ────────────────────────────────────────────────────── */}
       <ModeGrid modes={modes} onSelect={handleModeSelect} />
 
-      {/* ── Difficulty ───────────────────────────────────────────────────── */}
-      <div className="card">
-        <h2 className="font-semibold text-slate-700 dark:text-slate-300 mb-3">Difficulty</h2>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.entries(DIFFICULTY).map(([key, diff]) => (
-            <button
-              key={key}
-              onClick={() => setDifficulty(key)}
-              className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all text-sm ${
-                difficulty === key
-                  ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-600 dark:text-slate-400'
-              }`}
-            >
-              <span className="text-xl">{diff.emoji}</span>
-              <span className="font-semibold">{diff.label}</span>
-              <span className="text-xs text-center text-slate-400 dark:text-slate-500">{diff.description}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <p className="text-center text-sm text-slate-400 dark:text-slate-500 -mt-2">
+      <p className="text-center text-sm text-slate-400 dark:text-slate-500">
         Tap a quiz mode above to start instantly
       </p>
     </div>
