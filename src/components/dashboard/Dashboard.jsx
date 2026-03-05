@@ -2,8 +2,7 @@ import { motion } from 'framer-motion'
 import { useDailyChallenge } from '../../hooks/useDailyChallenge'
 import XPBar from '../gamification/XPBar'
 import BadgeGrid from '../gamification/BadgeGrid'
-import { getWeakStates, getXPProgress, getLevelForXP } from '../../utils/gamification'
-import { STATES } from '../../data/states'
+import { getXPProgress, getLevelForXP } from '../../utils/gamification'
 
 export default function Dashboard({ onNavigate, data }) {
   const xpProgress = getXPProgress(data?.profile?.totalXP || 0)
@@ -19,16 +18,6 @@ export default function Dashboard({ onNavigate, data }) {
   const totalQ = profile.totalQuestions || 0
   const accuracy = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0
 
-  const weakStates = getWeakStates(stateProgress, 4)
-
-  const QUIZ_SHORTCUTS = [
-    { mode: 'stateId',      label: 'Find States',    emoji: '🗺️' },
-    { mode: 'capitals',     label: 'Capitals',       emoji: '🏛️' },
-    { mode: 'nfl',          label: 'NFL Teams',      emoji: '🏈' },
-    { mode: 'landmarks',    label: 'Landmarks',      emoji: '🗽' },
-    { mode: 'famousPeople', label: 'Famous People',  emoji: '⭐' },
-    { mode: 'mixed',        label: 'Mixed Quiz',     emoji: '🎲' }
-  ]
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-5">
@@ -75,50 +64,6 @@ export default function Dashboard({ onNavigate, data }) {
         ))}
       </div>
 
-      {/* Quick quiz shortcuts */}
-      <div>
-        <h2 className="font-bold text-slate-700 dark:text-slate-300 mb-3">Quick Quiz</h2>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-          {QUIZ_SHORTCUTS.map(qs => (
-            <button
-              key={qs.mode}
-              onClick={() => onNavigate('quiz', { mode: qs.mode })}
-              className="card flex flex-col items-center gap-1 py-3 hover:border-blue-300 active:scale-95 transition-all"
-            >
-              <span className="text-2xl">{qs.emoji}</span>
-              <span className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">{qs.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Weak states */}
-      {weakStates.length > 0 && (
-        <div className="card">
-          <h2 className="font-bold text-slate-700 dark:text-slate-300 mb-3">💪 Practice These States</h2>
-          <div className="space-y-2">
-            {weakStates.map(({ state, score }) => (
-              <div key={state.abbr} className="flex items-center gap-3">
-                <button
-                  onClick={() => onNavigate('quiz', { mode: 'stateId', region: state.region })}
-                  className="flex-1 flex items-center gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg px-2 py-1.5 transition-colors"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-700 dark:text-slate-300 text-sm">
-                    {state.abbr}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-900 dark:text-white">{state.name}</div>
-                    <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-600 rounded-full mt-1">
-                      <div className="h-full bg-red-400 rounded-full" style={{ width: `${score * 100}%` }} />
-                    </div>
-                  </div>
-                  <span className="text-sm text-red-500 font-bold">{Math.round(score * 100)}%</span>
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Recent badges */}
       {badges.length > 0 && (

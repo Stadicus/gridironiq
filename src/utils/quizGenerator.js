@@ -147,23 +147,6 @@ function makeLandmarkQuestion(state) {
   }
 }
 
-function makeFamousPersonQuestion(state) {
-  if (!state.famousPeople || state.famousPeople.length === 0) return null
-  const person = state.famousPeople[Math.floor(Math.random() * state.famousPeople.length)]
-  const allNames = STATES.map(s => s.name)
-  return {
-    id: `person_${state.abbr}_${Date.now()}`,
-    type: 'famousPeople',
-    question: `Which state is ${person} associated with?`,
-    correctAnswer: state.name,
-    correctStateAbbr: state.abbr,
-    options: makeOptions(state.name, allNames),
-    hint: `Think about ${state.region}…`,
-    explanation: `${cleanPersonName(person)} is from ${state.name}.`,
-    wikiTitle: cleanPersonName(person)
-  }
-}
-
 // Returns just the team nickname, e.g. "Arizona Cardinals" → "Cardinals"
 function nickname(team) {
   return team.name.split(' ').pop()
@@ -354,12 +337,6 @@ export const QUIZ_MODES = {
     description: 'Which state is this landmark in?',
     emoji: '🗽'
   },
-  famousPeople: {
-    id: 'famousPeople',  category: 'geography',
-    label: 'Famous People',
-    description: 'Which state is this person from?',
-    emoji: '⭐'
-  },
   nicknames: {
     id: 'nicknames',     category: 'geography',
     label: 'State Nicknames',
@@ -477,16 +454,6 @@ export function generateQuestions(mode, count = 10, regionFilter = null) {
         }
         if (questions.length >= count) break
       }
-    } else if (mode === 'famousPeople') {
-      for (const s of states) {
-        try {
-          const q = makeFamousPersonQuestion(s)
-          if (q) questions.push(q)
-        } catch (err) {
-          console.warn(`Error generating famous person question for ${s?.abbr}:`, err)
-        }
-        if (questions.length >= count) break
-      }
     } else if (mode === 'nfl') {
       const teams = shuffle(NFL_TEAMS || [])
       for (const t of teams.slice(0, count)) {
@@ -584,7 +551,6 @@ export function generateQuestions(mode, count = 10, regionFilter = null) {
       const generators = [
         () => makeCapitalQuestion(rndState()),
         () => makeLandmarkQuestion(rndState()),
-        () => makeFamousPersonQuestion(rndState()),
         () => makeNicknameQuestion(rndState()),
         () => makeFlagQuestion(rndState()),
         () => makeWaterwayQuestion(rndWater()),
