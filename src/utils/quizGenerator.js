@@ -2,9 +2,15 @@ import { STATES, CAPITAL_WIKI } from '../data/states'
 import { NFL_TEAMS, TEAM_BY_ID, STARTING_QBS, NFL_LEGENDS } from '../data/nfl'
 import { WATERWAYS } from '../data/waterways'
 
-// Strip parenthetical notes from famous-people entries, e.g. "Stephen King (born)" → "Stephen King"
-function cleanPersonName(name) {
+// Strip parenthetical notes and ellipsis from names, used for both famous people and landmarks
+function cleanName(name) {
+  if (!name) return ''
   return name.replace(/\s*\([^)]*\)\s*/g, '').replace(/\s*\.\.\..*/g, '').trim()
+}
+
+// Alias for backward compatibility
+function cleanPersonName(name) {
+  return cleanName(name)
 }
 
 function shuffle(arr) {
@@ -137,7 +143,7 @@ function makeLandmarkQuestion(state) {
     options: makeOptions(state.name, allNames),
     hint: `It's in the ${state.region}`,
     explanation: `${landmark} is located in ${state.name}.`,
-    wikiTitle: landmark
+    wikiTitle: cleanName(landmark)  // Apply consistent name cleaning
   }
 }
 
@@ -430,123 +436,197 @@ export const QUIZ_MODES = {
 }
 
 export function generateQuestions(mode, count = 10, regionFilter = null) {
-  let states = regionFilter
-    ? STATES.filter(s => s.region === regionFilter)
-    : STATES
+  try {
+    let states = regionFilter
+      ? STATES.filter(s => s.region === regionFilter)
+      : STATES
 
-  states = shuffle(states)
-  const questions = []
+    if (!states || states.length === 0) {
+      console.warn(`generateQuestions: No states found for mode ${mode}, region ${regionFilter}`)
+      return []
+    }
 
-  if (mode === 'stateId') {
-    const useMapClick = Math.random() > 0.5
-    for (const s of states.slice(0, count)) {
-      const q = useMapClick ? makeFindStateQuestion(s) : makeNameStateQuestion(s)
-      if (q) questions.push(q)
+    states = shuffle(states)
+    const questions = []
+
+    if (mode === 'stateId') {
+      const useMapClick = Math.random() > 0.5
+      for (const s of states.slice(0, count)) {
+        try {
+          const q = useMapClick ? makeFindStateQuestion(s) : makeNameStateQuestion(s)
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating stateId question for ${s?.abbr}:`, err)
+        }
+      }
+    } else if (mode === 'capitals') {
+      for (const s of states.slice(0, count)) {
+        try {
+          questions.push(makeCapitalQuestion(s))
+        } catch (err) {
+          console.warn(`Error generating capital question for ${s?.abbr}:`, err)
+        }
+      }
+    } else if (mode === 'landmarks') {
+      for (const s of states) {
+        try {
+          const q = makeLandmarkQuestion(s)
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating landmark question for ${s?.abbr}:`, err)
+        }
+        if (questions.length >= count) break
+      }
+    } else if (mode === 'famousPeople') {
+      for (const s of states) {
+        try {
+          const q = makeFamousPersonQuestion(s)
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating famous person question for ${s?.abbr}:`, err)
+        }
+        if (questions.length >= count) break
+      }
+    } else if (mode === 'nfl') {
+      const teams = shuffle(NFL_TEAMS || [])
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflTeamQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL team question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflStadium') {
+      const teams = shuffle(NFL_TEAMS || [])
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflStadiumQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL stadium question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflLogo') {
+      const teams = shuffle(NFL_TEAMS || [])
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflLogoQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL logo question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflDivision') {
+      const teams = shuffle(NFL_TEAMS || [])
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflDivisionQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL division question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflCity') {
+      const teams = shuffle(NFL_TEAMS || [])
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflCityQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL city question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflQB') {
+      const teams = shuffle((NFL_TEAMS || []).filter(t => STARTING_QBS?.[t.id]))
+      for (const t of teams.slice(0, count)) {
+        try {
+          questions.push(makeNflQBQuestion(t))
+        } catch (err) {
+          console.warn(`Error generating NFL QB question for ${t?.id}:`, err)
+        }
+      }
+    } else if (mode === 'nflMVP') {
+      const players = shuffle([...(NFL_LEGENDS || [])])
+      for (const p of players.slice(0, count)) {
+        try {
+          const q = makeNflMVPQuestion(p)
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating NFL MVP question:`, err)
+        }
+      }
+    } else if (mode === 'nicknames') {
+      for (const s of states.slice(0, count)) {
+        try {
+          questions.push(makeNicknameQuestion(s))
+        } catch (err) {
+          console.warn(`Error generating nickname question for ${s?.abbr}:`, err)
+        }
+      }
+    } else if (mode === 'flags') {
+      for (const s of states.slice(0, count)) {
+        try {
+          questions.push(makeFlagQuestion(s))
+        } catch (err) {
+          console.warn(`Error generating flag question for ${s?.abbr}:`, err)
+        }
+      }
+    } else if (mode === 'waterways') {
+      let pool = regionFilter
+        ? (WATERWAYS || []).filter(w => STATES?.find(s => s.abbr === w.state)?.region === regionFilter)
+        : (WATERWAYS || [])
+      for (const w of shuffle(pool).slice(0, count)) {
+        try {
+          questions.push(makeWaterwayQuestion(w))
+        } catch (err) {
+          console.warn(`Error generating waterway question:`, err)
+        }
+      }
+    } else if (mode === 'mixed') {
+      const rndState = () => STATES[Math.floor(Math.random() * (STATES?.length || 0))]
+      const rndWater = () => WATERWAYS[Math.floor(Math.random() * (WATERWAYS?.length || 0))]
+      const generators = [
+        () => makeCapitalQuestion(rndState()),
+        () => makeLandmarkQuestion(rndState()),
+        () => makeFamousPersonQuestion(rndState()),
+        () => makeNicknameQuestion(rndState()),
+        () => makeFlagQuestion(rndState()),
+        () => makeWaterwayQuestion(rndWater()),
+        () => makeNameStateQuestion(rndState()),
+      ]
+      while (questions.length < count) {
+        try {
+          const gen = generators[Math.floor(Math.random() * generators.length)]
+          const q = gen()
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating mixed question:`, err)
+        }
+      }
+    } else if (mode === 'nflMixed') {
+      const rndTeam   = () => NFL_TEAMS[Math.floor(Math.random() * (NFL_TEAMS?.length || 0))]
+      const rndLegend = () => NFL_LEGENDS[Math.floor(Math.random() * (NFL_LEGENDS?.length || 0))]
+      const generators = [
+        () => makeNflLogoQuestion(rndTeam()),
+        () => makeNflTeamQuestion(rndTeam()),
+        () => makeNflCityQuestion(rndTeam()),
+        () => makeNflQBQuestion(rndTeam()),
+        () => makeNflDivisionQuestion(rndTeam()),
+        () => makeNflStadiumQuestion(rndTeam()),
+        () => makeNflMVPQuestion(rndLegend()),
+      ]
+      while (questions.length < count) {
+        try {
+          const gen = generators[Math.floor(Math.random() * generators.length)]
+          const q = gen()
+          if (q) questions.push(q)
+        } catch (err) {
+          console.warn(`Error generating NFL mixed question:`, err)
+        }
+      }
     }
-  } else if (mode === 'capitals') {
-    for (const s of states.slice(0, count)) {
-      questions.push(makeCapitalQuestion(s))
-    }
-  } else if (mode === 'landmarks') {
-    for (const s of states) {
-      const q = makeLandmarkQuestion(s)
-      if (q) questions.push(q)
-      if (questions.length >= count) break
-    }
-  } else if (mode === 'famousPeople') {
-    for (const s of states) {
-      const q = makeFamousPersonQuestion(s)
-      if (q) questions.push(q)
-      if (questions.length >= count) break
-    }
-  } else if (mode === 'nfl') {
-    const teams = shuffle(NFL_TEAMS)
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflTeamQuestion(t))
-    }
-  } else if (mode === 'nflStadium') {
-    const teams = shuffle(NFL_TEAMS)
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflStadiumQuestion(t))
-    }
-  } else if (mode === 'nflLogo') {
-    const teams = shuffle(NFL_TEAMS)
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflLogoQuestion(t))
-    }
-  } else if (mode === 'nflDivision') {
-    const teams = shuffle(NFL_TEAMS)
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflDivisionQuestion(t))
-    }
-  } else if (mode === 'nflCity') {
-    const teams = shuffle(NFL_TEAMS)
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflCityQuestion(t))
-    }
-  } else if (mode === 'nflQB') {
-    const teams = shuffle(NFL_TEAMS).filter(t => STARTING_QBS[t.id])
-    for (const t of teams.slice(0, count)) {
-      questions.push(makeNflQBQuestion(t))
-    }
-  } else if (mode === 'nflMVP') {
-    const players = shuffle([...NFL_LEGENDS])
-    for (const p of players.slice(0, count)) {
-      const q = makeNflMVPQuestion(p)
-      if (q) questions.push(q)
-    }
-  } else if (mode === 'nicknames') {
-    for (const s of states.slice(0, count)) {
-      questions.push(makeNicknameQuestion(s))
-    }
-  } else if (mode === 'flags') {
-    for (const s of states.slice(0, count)) {
-      questions.push(makeFlagQuestion(s))
-    }
-  } else if (mode === 'waterways') {
-    let pool = regionFilter
-      ? WATERWAYS.filter(w => STATES.find(s => s.abbr === w.state)?.region === regionFilter)
-      : WATERWAYS
-    for (const w of shuffle(pool).slice(0, count)) {
-      questions.push(makeWaterwayQuestion(w))
-    }
-  } else if (mode === 'mixed') {
-    const rndState = () => STATES[Math.floor(Math.random() * STATES.length)]
-    const rndWater = () => WATERWAYS[Math.floor(Math.random() * WATERWAYS.length)]
-    const generators = [
-      () => makeCapitalQuestion(rndState()),
-      () => makeLandmarkQuestion(rndState()),
-      () => makeFamousPersonQuestion(rndState()),
-      () => makeNicknameQuestion(rndState()),
-      () => makeFlagQuestion(rndState()),
-      () => makeWaterwayQuestion(rndWater()),
-      () => makeNameStateQuestion(rndState()),
-    ]
-    while (questions.length < count) {
-      const gen = generators[Math.floor(Math.random() * generators.length)]
-      const q = gen()
-      if (q) questions.push(q)
-    }
-  } else if (mode === 'nflMixed') {
-    const rndTeam   = () => NFL_TEAMS[Math.floor(Math.random() * NFL_TEAMS.length)]
-    const rndLegend = () => NFL_LEGENDS[Math.floor(Math.random() * NFL_LEGENDS.length)]
-    const generators = [
-      () => makeNflLogoQuestion(rndTeam()),
-      () => makeNflTeamQuestion(rndTeam()),
-      () => makeNflCityQuestion(rndTeam()),
-      () => makeNflQBQuestion(rndTeam()),
-      () => makeNflDivisionQuestion(rndTeam()),
-      () => makeNflStadiumQuestion(rndTeam()),
-      () => makeNflMVPQuestion(rndLegend()),
-    ]
-    while (questions.length < count) {
-      const gen = generators[Math.floor(Math.random() * generators.length)]
-      const q = gen()
-      if (q) questions.push(q)
-    }
+
+    return questions.slice(0, count)
+  } catch (err) {
+    console.error(`Critical error in generateQuestions(${mode}):`, err)
+    return []
   }
-
-  return questions.slice(0, count)
 }
 
 export function generateDailyChallenge() {

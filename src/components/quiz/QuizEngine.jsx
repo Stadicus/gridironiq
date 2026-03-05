@@ -111,7 +111,11 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
     <div className="max-w-xl mx-auto px-4 pt-4 pb-20 md:pb-4 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <button onClick={() => { quiz.exitQuiz(); onExit?.() }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm">
+        <button
+          onClick={() => { quiz.exitQuiz(); onExit?.() }}
+          aria-label="Exit quiz"
+          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm"
+        >
           ← Exit
         </button>
         <div className="flex items-center gap-3">
@@ -144,11 +148,11 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
             <div className="card overflow-hidden">
               {(q.wikiTitle || q.logoUrl) ? (
                 /* Portrait layout for all image questions — image left, content right.
-                   Image column uses absolute positioning to fill the column edge-to-edge
-                   regardless of how tall the content column grows. */
-                <div className="flex -mx-4 -mt-4 -mb-4">
+                   Responsive: mobile shows full-width stacked, tablet/desktop shows portrait left.
+                   Image column uses absolute positioning to fill edge-to-edge. */
+                <div className="flex flex-col md:flex-row -mx-4 -mt-4 -mb-4">
                   <div
-                    className={`w-1/3 aspect-square flex-shrink-0 self-start relative overflow-hidden ${q.logoUrl ? 'bg-white dark:bg-slate-900' : 'bg-slate-100 dark:bg-slate-700'}`}
+                    className={`w-full md:w-1/3 md:aspect-square flex-shrink-0 self-start relative overflow-hidden ${q.logoUrl ? 'bg-white dark:bg-slate-900' : 'bg-slate-100 dark:bg-slate-700'}`}
                   >
                     {imageLoading ? (
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -210,6 +214,7 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
                 />
                 <button
                   onClick={toggleNEZoom}
+                  aria-label={isZoomedNE ? 'Show full US map' : 'Zoom to Northeast'}
                   className="absolute top-2 right-2 text-xs font-semibold px-2 py-1.5 rounded-xl shadow bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600"
                 >
                   {isZoomedNE ? '🗺️ Full' : '🔍 NE'}
@@ -293,6 +298,7 @@ export default function QuizEngine({ initialMode, initialDifficulty, onExit, onC
               exit={{ opacity: 0, x: 12 }}
               transition={{ duration: 0.18 }}
               onClick={quiz.nextQuestion}
+              aria-label={quiz.index + 1 >= quiz.questions.length ? 'View quiz results' : 'Go to next question'}
               className="btn-primary px-5 py-2 whitespace-nowrap flex-shrink-0"
             >
               {quiz.index + 1 >= quiz.questions.length ? 'See Results →' : 'Next →'}

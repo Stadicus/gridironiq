@@ -61,12 +61,37 @@ function load() {
   }
 }
 
+function getStorageQuotaPercent() {
+  try {
+    if (!navigator.storage?.estimate) return null
+    // Estimate is async, so just check localStorage size heuristically
+    const testKey = 'quota-test'
+    const testValue = 'x'.repeat(1024 * 1024) // 1MB
+    try {
+      localStorage.setItem(testKey, testValue)
+      localStorage.removeItem(testKey)
+      return null // Quota OK
+    } catch {
+      return 95 // Quota nearly exceeded
+    }
+  } catch {
+    return null
+  }
+}
+
 function save(data) {
   try {
+    const quotaPercent = getStorageQuotaPercent()
+    if (quotaPercent && quotaPercent > 90) {
+      console.warn('Storage quota nearly exceeded. Consider pruning old data.')
+      window.dispatchEvent(new CustomEvent('storageQuotaWarning', { detail: quotaPercent }))
+    }
+
     localStorage.setItem(NS, JSON.stringify(data))
     window.dispatchEvent(new CustomEvent('progressUpdated', { detail: data }))
   } catch (e) {
     console.error('Storage write failed', e)
+    window.dispatchEvent(new CustomEvent('storageQuotaExceeded', { detail: e }))
   }
 }
 
@@ -94,6 +119,8 @@ function update(updater) {
 
 export function getData() { return load() }
 
+export { update }
+
 export function recordAnswer({ quizType, isCorrect, stateAbbr, secondsTaken }) {
   return update(data => {
     const d = data.profile
@@ -110,15 +137,22 @@ export function recordAnswer({ quizType, isCorrect, stateAbbr, secondsTaken }) {
       data.streaks.current = 0
     }
 
-    // Per quiz-type stats
-    if (quizType && data.quizStats[quizType]) {
+    // Per quiz-type stats — validate and initialize missing types
+    if (quizType) {
+      if (!data.quizStats) data.quizStats = {}
+      if (!data.quizStats[quizType]) {
+        data.quizStats[quizType] = { attempts: 0, correct: 0 }
+      }
       data.quizStats[quizType].attempts++
       if (isCorrect) data.quizStats[quizType].correct++
     }
 
-    // Per-state tracking
+    // Per-state tracking — initialize missing states
     if (stateAbbr) {
-      if (!data.stateProgress[stateAbbr]) data.stateProgress[stateAbbr] = { attempts: 0, correct: 0 }
+      if (!data.stateProgress) data.stateProgress = {}
+      if (!data.stateProgress[stateAbbr]) {
+        data.stateProgress[stateAbbr] = { attempts: 0, correct: 0 }
+      }
       data.stateProgress[stateAbbr].attempts++
       if (isCorrect) data.stateProgress[stateAbbr].correct++
     }

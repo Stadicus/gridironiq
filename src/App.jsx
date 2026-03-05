@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import AppShell from './components/layout/AppShell'
 import Dashboard from './components/dashboard/Dashboard'
 import MapPage from './components/map/MapPage'
@@ -11,10 +11,19 @@ import BadgeUnlockModal from './components/gamification/BadgeUnlockModal'
 import LevelUpModal from './components/gamification/LevelUpModal'
 import SplashScreen from './components/onboarding/SplashScreen'
 import WelcomeModal from './components/onboarding/WelcomeModal'
+import ErrorBoundary from './components/ErrorBoundary'
 import { getData } from './utils/storage'
 import { QUIZ_MODES } from './utils/quizGenerator'
 
-export default function App() {
+// Memoize page components to prevent unnecessary re-renders
+const MemoizedDashboard = memo(Dashboard)
+const MemoizedMapPage = memo(MapPage)
+const MemoizedQuizPage = memo(QuizPage)
+const MemoizedDailyPage = memo(DailyPage)
+const MemoizedProgressPage = memo(ProgressPage)
+const MemoizedSettingsPage = memo(SettingsPage)
+
+function AppContent() {
   const [page, setPage] = useState('dashboard')
   const [quizState, setQuizState] = useState(null) // { mode, difficulty, region }
   const [splashDone, setSplashDone] = useState(false)
@@ -54,14 +63,14 @@ export default function App() {
 
   const renderPage = () => {
     switch (page) {
-      case 'dashboard':  return <Dashboard onNavigate={navigateTo} data={data} />
-      case 'map':        return <MapPage onNavigate={navigateTo} data={data} />
-      case 'geography':  return <QuizPage category="geography" onNavigate={navigateTo} initialState={quizState} data={data} />
-      case 'nfl':        return <QuizPage category="nfl" onNavigate={navigateTo} initialState={quizState} data={data} />
-      case 'daily':      return <DailyPage onNavigate={navigateTo} data={data} />
-      case 'progress':   return <ProgressPage onNavigate={navigateTo} data={data} />
-      case 'settings':   return <SettingsPage onNavigate={navigateTo} data={data} />
-      default:           return <Dashboard onNavigate={navigateTo} data={data} />
+      case 'dashboard':  return <MemoizedDashboard onNavigate={navigateTo} data={data} />
+      case 'map':        return <MemoizedMapPage onNavigate={navigateTo} data={data} />
+      case 'geography':  return <MemoizedQuizPage category="geography" onNavigate={navigateTo} initialState={quizState} data={data} />
+      case 'nfl':        return <MemoizedQuizPage category="nfl" onNavigate={navigateTo} initialState={quizState} data={data} />
+      case 'daily':      return <MemoizedDailyPage onNavigate={navigateTo} data={data} />
+      case 'progress':   return <MemoizedProgressPage onNavigate={navigateTo} data={data} />
+      case 'settings':   return <MemoizedSettingsPage onNavigate={navigateTo} data={data} />
+      default:           return <MemoizedDashboard onNavigate={navigateTo} data={data} />
     }
   }
 
@@ -84,5 +93,13 @@ export default function App() {
         <WelcomeModal onClose={() => setShowWelcome(false)} />
       )}
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   )
 }

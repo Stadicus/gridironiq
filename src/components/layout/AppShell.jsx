@@ -17,7 +17,11 @@ export default function AppShell({ children, currentPage, onNavigate, xpProgress
 
       {/* Mobile top bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-blue-800 text-white safe-top">
-        <button onClick={() => onNavigate('dashboard')} className="font-bold text-lg hover:opacity-80 transition-opacity">🏈 Gridiron IQ</button>
+        <button
+          onClick={() => onNavigate('dashboard')}
+          aria-label="Go to home dashboard"
+          className="font-bold text-lg hover:opacity-80 transition-opacity"
+        >🏈 Gridiron IQ</button>
         <div className="flex items-center gap-3 text-sm">
           {streak > 0 && <span className="flex items-center gap-1">🔥 {streak}</span>}
           <span className="flex items-center gap-1">⭐ Lv.{currentLevel?.level}</span>

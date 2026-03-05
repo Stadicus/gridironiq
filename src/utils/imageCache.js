@@ -6,20 +6,24 @@ const blobCache = {}
 // Wikipedia summary metadata cache (URL + description + bio)
 const wikiCache = {}
 
-// Local image manifest — lazy-loaded on first use
+// Local image manifest — lazy-loaded on first use with cache failure handling
 let manifest = null
 let manifestLoaded = false
+let manifestFailedToLoad = false
 
 async function getManifest() {
   if (manifestLoaded) return manifest
+  if (manifestFailedToLoad) return {} // Don't retry if load failed
   manifestLoaded = true
   try {
     const { IMAGE_MANIFEST } = await import('../data/imageManifest.js')
     manifest = IMAGE_MANIFEST
     return manifest
-  } catch {
+  } catch (err) {
     // Manifest not generated yet — will fall back to remote fetching
+    manifestFailedToLoad = true
     manifest = {}
+    console.warn('Failed to load image manifest:', err)
     return manifest
   }
 }
